@@ -1,13 +1,23 @@
 package com.example.moviedatabase
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.api.TheMovieDbApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
+private const val TAG = "MoviesListFragment"
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +29,14 @@ class MoviesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //get response from web request to https://www.themoviedb.org
+        val moviesLiveData: LiveData<String> = MovieDBFetcher().fetchContents()
+        moviesLiveData.observe(
+            this,
+            Observer { responseString -> Log.d(TAG, "Response received : $responseString")
+            })
+
     }
 
     override fun onCreateView(
