@@ -10,12 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.api.TheMovieDbApi
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import com.example.moviedatabase.api.ResultsResponse
 
 private const val TAG = "MoviesListFragment"
 
@@ -31,10 +26,10 @@ class MoviesListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         //get response from web request to https://www.themoviedb.org
-        val moviesLiveData: LiveData<String> = MovieDBFetcher().fetchContents()
+        val moviesLiveData: LiveData<List<MovieItem>> = MovieDBFetcher().fetchMovies()
         moviesLiveData.observe(
             this,
-            Observer { responseString -> Log.d(TAG, "Response received : $responseString")
+            Observer { movieItems -> Log.d(TAG, "Response received : $movieItems")
             })
 
     }
