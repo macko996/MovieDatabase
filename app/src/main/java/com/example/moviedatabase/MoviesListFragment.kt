@@ -21,6 +21,7 @@ private const val TAG = "MoviesListFragment"
  */
 class MoviesListFragment : Fragment() {
     private lateinit var movieRecyclerView: RecyclerView
+    private lateinit var movieAdapter: MovieAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,8 @@ class MoviesListFragment : Fragment() {
         moviesLiveData.observe(
             this,
             Observer { movieItems -> Log.d(TAG, "Response received : $movieItems")
+                    movieAdapter = MovieAdapter(movieItems)
+                    movieRecyclerView.setAdapter(movieAdapter)
             })
 
     }
