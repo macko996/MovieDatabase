@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,11 +14,17 @@ class MovieAdapter (private val movies: List<Movie>, private val listener: MOnIt
     : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
 
     private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieHolder {
 
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.movie_item_view,parent,false)
 
+        // here we override the inflated view's height to be half the recyclerview size
+        val layoutParams = itemView.layoutParams as MarginLayoutParams
+        layoutParams.width = (parent.getWidth() / 2) - layoutParams.leftMargin - layoutParams.rightMargin
+
+        itemView.layoutParams = layoutParams
         return MovieHolder(itemView)
     }
 
@@ -48,7 +55,7 @@ class MovieAdapter (private val movies: List<Movie>, private val listener: MOnIt
             itemView.setOnClickListener{
                 val position = adapterPosition
                 val id = movies[position].id
-                listener.onItemClick(id)
+                listener.onMovieClick(id)
             }
         }
 
@@ -61,7 +68,7 @@ class MovieAdapter (private val movies: List<Movie>, private val listener: MOnIt
     }
 
     interface MOnItemClickListener{
-        fun onItemClick(id: Int)
+        fun onMovieClick(id: Int)
     }
 
 }

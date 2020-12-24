@@ -84,5 +84,28 @@ class MovieFetcher {
         return movieLiveData
     }
 
+    /**
+     * Get movie recommendations
+     */
+    fun fetchMovieRecommendations(movieId: Int): LiveData<List<Movie>> {
+
+        val movieListLiveData : MutableLiveData<List<Movie>> = MutableLiveData()
+        val movieRecommendationsRequest: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)
+
+        movieRecommendationsRequest.enqueue(object : Callback<ResultsResponse> {
+            override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed to fetch movies recommendations", t)
+            }
+            override fun onResponse(call: Call<ResultsResponse>, response: Response<ResultsResponse>){
+                Log.d(TAG, "Received recommended movies: ${response.body()}")
+                val resultsResponse : ResultsResponse? = response.body()
+                val movies : List<Movie>? = resultsResponse?.movies ?: mutableListOf()
+
+                movieListLiveData.value = movies
+            }
+        })
+        return movieListLiveData
+    }
+
 
 }

@@ -12,4 +12,7 @@ interface TheMovieDbApi {
 
     @GET("movie/{id}")
     fun fetchMovieDetails(@Path("id") id : Int): Call<Movie>
+
+    @GET("movie/{movie_id}/recommendations")
+    fun fetchMovieRecommendations(@Path("movie_id") movieId : Int): Call<ResultsResponse>
 }

@@ -1,6 +1,7 @@
 package com.example.moviedatabase
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.MoviesListFragment.Companion.onMovieClickImplementaion
 import com.squareup.picasso.Picasso
 
 private const val TAG = "MovieDetailsFragment"
@@ -18,9 +22,12 @@ private const val TAG = "MovieDetailsFragment"
  * Use the [MovieDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MovieDetailFragment(private val movieId: Int) : Fragment() {
+class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.MOnItemClickListener{
 
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
+
+    private lateinit var movieRecyclerView: RecyclerView
+    private lateinit var movieAdapter: MovieAdapter
 
     private lateinit var backdrop: ImageView
     private lateinit var title: TextView
@@ -34,6 +41,12 @@ class MovieDetailFragment(private val movieId: Int) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
 
         //get details about the movie
         val movieLiveData: LiveData<Movie> = MovieFetcher().fetchMovieDetails(movieId)
@@ -54,6 +67,16 @@ class MovieDetailFragment(private val movieId: Int) : Fragment() {
                 revenue.text = revenueString
             })
 
+        //get recommended movies
+        val recommendedMoviesLiveData = MovieFetcher().fetchMovieRecommendations(movieId)
+        recommendedMoviesLiveData.observe(
+            this,
+            Observer {
+                    recommendedMovies ->
+                Log.d(TAG, "Received recommended movies: $recommendedMovies")
+                movieAdapter = MovieAdapter(recommendedMovies,this)
+                movieRecyclerView.setAdapter(movieAdapter)
+            })
     }
 
     override fun onCreateView(
@@ -72,10 +95,19 @@ class MovieDetailFragment(private val movieId: Int) : Fragment() {
         genres = view.findViewById(R.id.genres)
         revenue = view.findViewById(R.id.revenue)
 
+        movieRecyclerView = view.findViewById(R.id.recommended_movies_recycler_view)
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        movieRecyclerView.layoutManager = linearLayoutManager
         return view
     }
 
     companion object {
         fun newInstance(id: Int) = MovieDetailFragment(id)
+    }
+
+
+    override fun onMovieClick(id: Int) {
+
+        onMovieClickImplementaion(id, activity!!)
     }
 }

@@ -5,4 +5,5 @@
     <string name="box_office_revenue">"Box Office Revenue : %d USD"</string>
     <string name="movie_backdrop">Backdrop for the movie</string>
     <string name="runtime">%d min.</string>
+    <string name="recommended_movies">Recommended Movies</string>
 </resources>
