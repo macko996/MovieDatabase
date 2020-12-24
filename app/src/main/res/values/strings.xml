@@ -2,4 +2,7 @@
     <string name="app_name">MovieDatabase</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="the_movie_poster">The movie poster</string>
+    <string name="box_office_revenue">"Box Office Revenue : %d USD"</string>
+    <string name="movie_backdrop">Backdrop for the movie</string>
+    <string name="runtime">%d min.</string>
 </resources>

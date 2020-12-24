@@ -1,32 +1,59 @@
 package com.example.moviedatabase
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import com.squareup.picasso.Picasso
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "MovieDetailsFragment"
 
 /**
  * A simple [Fragment] subclass.
  * Use the [MovieDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MovieDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class MovieDetailFragment(private val movieId: Int) : Fragment() {
+
+    private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
+
+    private lateinit var backdrop: ImageView
+    private lateinit var title: TextView
+    private lateinit var director: TextView
+    private lateinit var releaseDate: TextView
+    private lateinit var runtime: TextView
+    private lateinit var rating: TextView
+    private lateinit var description: TextView
+    private lateinit var genres: TextView
+    private lateinit var revenue: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        //get details about the movie
+        val movieLiveData: LiveData<Movie> = MovieFetcher().fetchMovieDetails(movieId)
+        movieLiveData.observe(
+            this,
+            Observer { movie ->
+                val backdropUrl = BACKDROP_BASE_URL + movie.backdropPath
+                Picasso.get().load(backdropUrl).into(backdrop)
+                title.text = movie.title
+                director.text = movie.director
+                releaseDate.text = movie.releaseDate
+                val runtimeString = getString(R.string.runtime, movie.runtime)
+                runtime.text = runtimeString
+                rating.text = movie.averageScore.toString()
+                description.text = movie.description
+                //genres.text = movie.genre_ids.toString()
+                val revenueString = getString(R.string.box_office_revenue, movie.revenue)
+                revenue.text = revenueString
+            })
+
     }
 
     override fun onCreateView(
@@ -34,26 +61,21 @@ class MovieDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie_detail, container, false)
+        val view =  inflater.inflate(R.layout.fragment_movie_detail, container, false)
+        backdrop = view.findViewById(R.id.backdrop)
+        title = view.findViewById(R.id.title)
+        director = view.findViewById(R.id.director)
+        releaseDate = view.findViewById(R.id.release_date)
+        runtime = view.findViewById(R.id.runtime)
+        rating = view.findViewById(R.id.rating)
+        description = view.findViewById(R.id.description)
+        genres = view.findViewById(R.id.genres)
+        revenue = view.findViewById(R.id.revenue)
+
+        return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MovieDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MovieDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance(id: Int) = MovieDetailFragment(id)
     }
 }
