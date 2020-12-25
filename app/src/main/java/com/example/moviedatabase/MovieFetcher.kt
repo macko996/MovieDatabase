@@ -39,8 +39,8 @@ class MovieFetcher {
     /**
      * Gets popular movies
      */
-    fun fetchMovies(): LiveData<List<Movie>> {
-        val responseLiveData : MutableLiveData<List<Movie>> = MutableLiveData()
+    fun fetchPopularMovies(): LiveData<ArrayList<Movie>> {
+        val responseLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
         val theMovieDBHomePageRequest: Call<ResultsResponse> = theMovieDbAPI.fetchMovies()
 
         theMovieDBHomePageRequest.enqueue(object : Callback<ResultsResponse> {
@@ -50,7 +50,7 @@ class MovieFetcher {
             override fun onResponse(call: Call<ResultsResponse>, response: Response<ResultsResponse>){
                 Log.d(TAG, "Response received: ${response.body()}")
                 val resultsResponse : ResultsResponse? = response.body()
-                val movies : List<Movie>? = resultsResponse?.movies ?: mutableListOf()
+                val movies : ArrayList<Movie>? = (resultsResponse?.movies ?: mutableListOf()) as ArrayList<Movie>?
 
                 responseLiveData.value = movies
             }
@@ -86,10 +86,11 @@ class MovieFetcher {
 
     /**
      * Get movie recommendations
+     * @param movieId the id of the movie for which we want recommendations
      */
-    fun fetchMovieRecommendations(movieId: Int): LiveData<List<Movie>> {
+    fun fetchMovieRecommendations(movieId: Int): LiveData<ArrayList<Movie>> {
 
-        val movieListLiveData : MutableLiveData<List<Movie>> = MutableLiveData()
+        val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
         val movieRecommendationsRequest: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)
 
         movieRecommendationsRequest.enqueue(object : Callback<ResultsResponse> {
@@ -99,7 +100,7 @@ class MovieFetcher {
             override fun onResponse(call: Call<ResultsResponse>, response: Response<ResultsResponse>){
                 Log.d(TAG, "Received recommended movies: ${response.body()}")
                 val resultsResponse : ResultsResponse? = response.body()
-                val movies : List<Movie>? = resultsResponse?.movies ?: mutableListOf()
+                val movies : ArrayList<Movie>? = (resultsResponse?.movies ?: mutableListOf()) as ArrayList<Movie>?
 
                 movieListLiveData.value = movies
             }
@@ -107,5 +108,29 @@ class MovieFetcher {
         return movieListLiveData
     }
 
+    /**
+     * Search for a movie
+     * @param query the query we search for
+     */
+    fun searchMovie(query: String): LiveData<ArrayList<Movie>> {
 
+        val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
+        val movieSearchRequest: Call<ResultsResponse> = theMovieDbAPI.searchMovie(query)
+
+        movieSearchRequest.enqueue(object : Callback<ResultsResponse> {
+
+            override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed search", t)
+            }
+            override fun onResponse(call: Call<ResultsResponse>, response: Response<ResultsResponse>){
+                Log.d(TAG,"Received search ${response.body()}")
+                val resultsResponse : ResultsResponse? = response.body()
+                val movies : ArrayList<Movie>? = (resultsResponse?.movies ?: mutableListOf()) as ArrayList<Movie>?
+
+                movieListLiveData.value = movies
+            }
+        })
+
+        return movieListLiveData
+    }
 }

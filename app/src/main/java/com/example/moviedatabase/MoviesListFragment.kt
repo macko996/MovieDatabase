@@ -2,9 +2,8 @@ package com.example.moviedatabase
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
@@ -23,20 +22,24 @@ private const val TAG = "MoviesListFragment"
 class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
+    private val movieFetcher = MovieFetcher()
+    private var movieList : ArrayList<Movie> = ArrayList<Movie>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onStart() {
         super.onStart()
 
         //get response from web request to https://www.themoviedb.org
-        val moviesLiveData: LiveData<List<Movie>> = MovieFetcher().fetchMovies()
+        val moviesLiveData: LiveData<ArrayList<Movie>> = movieFetcher.fetchPopularMovies()
         moviesLiveData.observe(
             this,
             Observer { movieItems -> Log.d(TAG, "Response received : $movieItems")
-                movieAdapter = MovieAdapter(movieItems,this)
+                movieList = movieItems
+                movieAdapter = MovieAdapter(movieList,this)
                 movieRecyclerView.setAdapter(movieAdapter)
             })
     }
@@ -54,6 +57,38 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         return view
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main, menu)
+
+        val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String): Boolean {
+
+                    Log.d(TAG, "QueryTextSubmit: $query")
+                    val moviesLiveData = movieFetcher.searchMovie(query)
+                    moviesLiveData.observe(
+                        this@MoviesListFragment,
+                        Observer { movieItems ->
+                            Log.d(TAG, "Search Response received : $movieItems")
+                            movieList.clear()
+                            movieList.addAll(movieItems)
+                            movieAdapter.notifyDataSetChanged()
+                        })
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    Log.d(TAG, "QueryTextChange: $query")
+                    return false
+                }
+            })
+        }
+
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

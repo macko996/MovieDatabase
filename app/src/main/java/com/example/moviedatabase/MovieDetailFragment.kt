@@ -28,6 +28,7 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
 
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
+    private val movieFetcher = MovieFetcher()
 
     private lateinit var backdrop: ImageView
     private lateinit var title: TextView
@@ -49,7 +50,7 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
 
 
         //get details about the movie
-        val movieLiveData: LiveData<Movie> = MovieFetcher().fetchMovieDetails(movieId)
+        val movieLiveData: LiveData<Movie> = movieFetcher.fetchMovieDetails(movieId)
         movieLiveData.observe(
             this,
             Observer { movie ->
@@ -68,7 +69,7 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
             })
 
         //get recommended movies
-        val recommendedMoviesLiveData = MovieFetcher().fetchMovieRecommendations(movieId)
+        val recommendedMoviesLiveData = movieFetcher.fetchMovieRecommendations(movieId)
         recommendedMoviesLiveData.observe(
             this,
             Observer {
