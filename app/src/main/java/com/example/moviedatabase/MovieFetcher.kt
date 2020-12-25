@@ -21,6 +21,7 @@ private const val TAG = "MovieFetcher"
  */
 class MovieFetcher {
 
+    private val BASE_URL = "https://api.themoviedb.org/3/"
     private val theMovieDbAPI: TheMovieDbApi
 
     init {
@@ -29,7 +30,7 @@ class MovieFetcher {
             .build()
 
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
@@ -41,9 +42,9 @@ class MovieFetcher {
      */
     fun fetchPopularMovies(): LiveData<ArrayList<Movie>> {
         val responseLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val theMovieDBHomePageRequest: Call<ResultsResponse> = theMovieDbAPI.fetchMovies()
+        val popularMoviesCall: Call<ResultsResponse> = theMovieDbAPI.fetchMovies()
 
-        theMovieDBHomePageRequest.enqueue(object : Callback<ResultsResponse> {
+        popularMoviesCall.enqueue(object : Callback<ResultsResponse> {
             override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch movies", t)
             }
@@ -65,9 +66,9 @@ class MovieFetcher {
     fun fetchMovieDetails(id:Int): MutableLiveData<Movie> {
 
         val movieLiveData: MutableLiveData<Movie> = MutableLiveData()
-        val theMovieDetailsRequest: Call<Movie> = theMovieDbAPI.fetchMovieDetails(id)
+        val movieDetailsCall: Call<Movie> = theMovieDbAPI.fetchMovieDetails(id)
 
-        theMovieDetailsRequest.enqueue(object : Callback<Movie> {
+        movieDetailsCall.enqueue(object : Callback<Movie> {
 
             override fun onFailure(call: Call<Movie>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch movie details about movie $id", t)
@@ -91,9 +92,9 @@ class MovieFetcher {
     fun fetchMovieRecommendations(movieId: Int): LiveData<ArrayList<Movie>> {
 
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val movieRecommendationsRequest: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)
+        val movieRecommendationsCall: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)
 
-        movieRecommendationsRequest.enqueue(object : Callback<ResultsResponse> {
+        movieRecommendationsCall.enqueue(object : Callback<ResultsResponse> {
             override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch movies recommendations", t)
             }
@@ -115,9 +116,9 @@ class MovieFetcher {
     fun searchMovie(query: String): LiveData<ArrayList<Movie>> {
 
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val movieSearchRequest: Call<ResultsResponse> = theMovieDbAPI.searchMovie(query)
+        val movieSearchCall: Call<ResultsResponse> = theMovieDbAPI.searchMovie(query)
 
-        movieSearchRequest.enqueue(object : Callback<ResultsResponse> {
+        movieSearchCall.enqueue(object : Callback<ResultsResponse> {
 
             override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
                 Log.e(TAG, "Failed search", t)
