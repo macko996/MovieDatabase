@@ -63,7 +63,9 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
                 runtime.text = runtimeString
                 rating.text = movie.averageScore.toString()
                 description.text = movie.description
-                //genres.text = movie.genre_ids.toString()
+                movie.genres.forEach {
+                    genre -> genres.append(genre.name + " | ")
+                }
                 val revenueString = getString(R.string.box_office_revenue, movie.revenue)
                 revenue.text = revenueString
             })
