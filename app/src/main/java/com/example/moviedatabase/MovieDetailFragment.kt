@@ -22,7 +22,8 @@ private const val TAG = "MovieDetailsFragment"
  * Use the [MovieDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.MOnItemClickListener{
+class MovieDetailFragment(private val movieId: Int) : Fragment(),
+    MovieAdapter.MOnItemClickListener {
 
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 
@@ -63,8 +64,8 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
                 runtime.text = runtimeString
                 rating.text = movie.averageScore.toString()
                 description.text = movie.description
-                movie.genres.forEach {
-                    genre -> genres.append(genre.name + " | ")
+                movie.genres.forEach { genre ->
+                    genres.append(genre.name + " | ")
                 }
                 val revenueString = getString(R.string.box_office_revenue, movie.revenue)
                 revenue.text = revenueString
@@ -74,10 +75,9 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
         val recommendedMoviesLiveData = movieFetcher.fetchMovieRecommendations(movieId)
         recommendedMoviesLiveData.observe(
             this,
-            Observer {
-                    recommendedMovies ->
+            Observer { recommendedMovies ->
                 Log.d(TAG, "Received recommended movies: $recommendedMovies")
-                movieAdapter = MovieAdapter(recommendedMovies,this)
+                movieAdapter = MovieAdapter(recommendedMovies, this)
                 movieRecyclerView.setAdapter(movieAdapter)
             })
     }
@@ -87,7 +87,7 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_movie_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_movie_detail, container, false)
         backdrop = view.findViewById(R.id.backdrop)
         title = view.findViewById(R.id.title)
         director = view.findViewById(R.id.director)
@@ -99,7 +99,8 @@ class MovieDetailFragment(private val movieId: Int) : Fragment(), MovieAdapter.M
         revenue = view.findViewById(R.id.revenue)
 
         movieRecyclerView = view.findViewById(R.id.recommended_movies_recycler_view)
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val linearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         movieRecyclerView.layoutManager = linearLayoutManager
         return view
     }

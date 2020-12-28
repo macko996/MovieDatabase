@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:textColor="@color/green"
         android:layout_marginStart="15dp"
         tools:text="About Time"/>
 
