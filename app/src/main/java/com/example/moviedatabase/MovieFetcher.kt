@@ -89,7 +89,7 @@ class MovieFetcher {
      * Get movie recommendations
      * @param movieId the id of the movie for which we want recommendations
      */
-    fun fetchMovieRecommendations(movieId: Int): LiveData<ArrayList<Movie>> {
+    fun fetchMovieRecommendations(movieId: Int): MutableLiveData<ArrayList<Movie>> {
 
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
         val movieRecommendationsCall: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)

@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 30
@@ -22,6 +24,14 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+  }
+
 }
 
 dependencies {
@@ -38,6 +48,11 @@ dependencies {
   implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
   implementation 'com.squareup.picasso:picasso:2.71828'
   implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+
+  //Navigation Component dependencies
+  implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+  implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
   testImplementation 'junit:junit:4.12'
   testImplementation 'org.mockito:mockito-core:1.10.19'
   androidTestImplementation 'androidx.test.ext:junit:1.1.2'

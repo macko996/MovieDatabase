@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -24,24 +27,20 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     private lateinit var movieAdapter: MovieAdapter
     private val movieFetcher = MovieFetcher()
     private var movieList : ArrayList<Movie> = ArrayList<Movie>()
+    private lateinit var moviesLiveData : LiveData<ArrayList<Movie>>
+    private lateinit var navController: NavController
+    private val args: MoviesListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        navController = findNavController()
+
     }
 
     override fun onStart() {
         super.onStart()
 
-        //get response from web request to https://www.themoviedb.org
-        val moviesLiveData: LiveData<ArrayList<Movie>> = movieFetcher.fetchPopularMovies()
-        moviesLiveData.observe(
-            this,
-            Observer { movieItems -> Log.d(TAG, "Response received : $movieItems")
-                movieList = movieItems
-                movieAdapter = MovieAdapter(movieList,this)
-                movieRecyclerView.setAdapter(movieAdapter)
-            })
     }
 
     override fun onCreateView(
@@ -53,8 +52,34 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         val view = inflater.inflate(R.layout.fragment_movies_list, container, false)
         movieRecyclerView = view.findViewById(R.id.movies_recycler_view)
         movieRecyclerView.layoutManager = GridLayoutManager(context,2)
-
+        movieAdapter = MovieAdapter(movieList, this)
+        movieRecyclerView.setAdapter(movieAdapter)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val query = args.searchQuery
+        //get response from web request to https://www.themoviedb.org
+        if (query=="/" || query.isEmpty()) {
+            moviesLiveData = movieFetcher.fetchPopularMovies()
+            moviesLiveData.observe(
+                viewLifecycleOwner,
+                Observer { movieItems ->
+                    movieList.clear()
+                    movieList.addAll(movieItems)
+                    movieAdapter.notifyDataSetChanged()
+                })
+        } else{
+            moviesLiveData = movieFetcher.searchMovie(args.searchQuery)
+            moviesLiveData.observe(
+                viewLifecycleOwner,
+                Observer {movieItems ->
+                    movieList.clear()
+                    movieList.addAll(movieItems)
+                    movieAdapter.notifyDataSetChanged()
+                })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -69,15 +94,8 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
 
                     Log.d(TAG, "QueryTextSubmit: $query")
-                    val moviesLiveData = movieFetcher.searchMovie(query)
-                    moviesLiveData.observe(
-                        this@MoviesListFragment,
-                        Observer { movieItems ->
-                            Log.d(TAG, "Search Response received : $movieItems")
-                            movieList.clear()
-                            movieList.addAll(movieItems)
-                            movieAdapter.notifyDataSetChanged()
-                        })
+                    val action = MoviesListFragmentDirections.actionMoviesListFragmentSelf(query)
+                    navController.navigate(action)
                     return true
                 }
 
@@ -96,25 +114,14 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
          */
         fun newInstance() = MoviesListFragment()
 
-        fun onMovieClickImplementaion(id: Int, activity: FragmentActivity){
-
-            // Create new fragment and transaction
-            Log.d(TAG," Clicked on the item $id")
-            val newFragment: Fragment = MovieDetailFragment.newInstance(id)
-            val transaction: FragmentTransaction = activity.getSupportFragmentManager().beginTransaction()
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack if needed
-            transaction.replace(R.id.fragment_container, newFragment)
-            transaction.addToBackStack(null)
-
-            // Commit the transaction
-            transaction.commit()
+        fun onMovieClickImplementaion(id: Int, navController: NavController){
+            val action = MoviesListFragmentDirections.actionMoviesListFragmentToMovieDetailFragment(id)
+                navController.navigate(action)
         }
     }
 
     override fun onMovieClick(id: Int) {
-        onMovieClickImplementaion(id,activity!!)
+        onMovieClickImplementaion(id,navController)
     }
 
 }
