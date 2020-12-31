@@ -12,6 +12,13 @@
         <action
             android:id="@+id/action_moviesListFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment" />
+        <action
+            android:id="@+id/action_moviesListFragment_self"
+            app:destination="@id/moviesListFragment" />
+        <argument
+            android:name="searchQuery"
+            app:argType="string"
+            android:defaultValue="/" />
     </fragment>
     <fragment
         android:id="@+id/movieDetailFragment"
