@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -16,15 +13,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.MoviesListFragment.Companion.onMovieClickImplementaion
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
+import javax.inject.Inject
 
 private const val TAG = "MovieDetailsFragment"
 
 /**
  * A simple [Fragment] subclass.
  */
+@AndroidEntryPoint
 class MovieDetailFragment() : Fragment(),
     MovieAdapter.MOnItemClickListener {
 
@@ -37,7 +36,8 @@ class MovieDetailFragment() : Fragment(),
 
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
-    private val movieFetcher = MovieFetcher()
+    @Inject
+    lateinit var movieFetcher: MovieFetcher
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

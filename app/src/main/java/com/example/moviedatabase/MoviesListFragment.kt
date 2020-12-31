@@ -5,8 +5,6 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -14,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 private const val TAG = "MoviesListFragment"
 
@@ -22,10 +22,12 @@ private const val TAG = "MoviesListFragment"
  * Use the [MoviesListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
+@AndroidEntryPoint
+class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
-    private val movieFetcher = MovieFetcher()
+    @Inject
+    lateinit var movieFetcher : MovieFetcher
     private var movieList : ArrayList<Movie> = ArrayList<Movie>()
     private lateinit var moviesLiveData : LiveData<ArrayList<Movie>>
     private lateinit var navController: NavController
@@ -61,7 +63,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         val query = args.searchQuery
         //get response from web request to https://www.themoviedb.org
-        if (query=="/" || query.isEmpty()) {
+        if (query == null) {
             moviesLiveData = movieFetcher.fetchPopularMovies()
             moviesLiveData.observe(
                 viewLifecycleOwner,
@@ -71,7 +73,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
                     movieAdapter.notifyDataSetChanged()
                 })
         } else{
-            moviesLiveData = movieFetcher.searchMovie(args.searchQuery)
+            moviesLiveData = movieFetcher.searchMovie(query)
             moviesLiveData.observe(
                 viewLifecycleOwner,
                 Observer {movieItems ->

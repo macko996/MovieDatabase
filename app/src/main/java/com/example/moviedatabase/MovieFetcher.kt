@@ -3,15 +3,13 @@ package com.example.moviedatabase
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.MovieInterceptor
 import com.example.moviedatabase.api.ResultsResponse
 import com.example.moviedatabase.api.TheMovieDbApi
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TAG = "MovieFetcher"
 
@@ -19,23 +17,9 @@ private const val TAG = "MovieFetcher"
  * This class is used for executing the Call objects from TheMovieDbApi
  * @see TheMovieDbApi
  */
-class MovieFetcher {
+@Singleton
+class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi) {
 
-    private val BASE_URL = "https://api.themoviedb.org/3/"
-    private val theMovieDbAPI: TheMovieDbApi
-
-    init {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(MovieInterceptor())
-            .build()
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-        theMovieDbAPI= retrofit.create(TheMovieDbApi::class.java)
-    }
 
     /**
      * Gets popular movies
