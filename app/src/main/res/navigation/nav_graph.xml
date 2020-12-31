@@ -18,7 +18,8 @@
         <argument
             android:name="searchQuery"
             app:argType="string"
-            android:defaultValue="/" />
+            android:defaultValue="@null"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/movieDetailFragment"
