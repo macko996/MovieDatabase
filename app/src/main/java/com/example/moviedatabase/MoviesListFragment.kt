@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -24,17 +26,20 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     private lateinit var movieAdapter: MovieAdapter
     private val movieFetcher = MovieFetcher()
     private var movieList : ArrayList<Movie> = ArrayList<Movie>()
+    private lateinit var moviesLiveData : LiveData<ArrayList<Movie>>
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        navController = findNavController()
     }
 
     override fun onStart() {
         super.onStart()
 
         //get response from web request to https://www.themoviedb.org
-        val moviesLiveData: LiveData<ArrayList<Movie>> = movieFetcher.fetchPopularMovies()
+        moviesLiveData = movieFetcher.fetchPopularMovies()
         moviesLiveData.observe(
             this,
             Observer { movieItems -> Log.d(TAG, "Response received : $movieItems")
@@ -96,25 +101,14 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
          */
         fun newInstance() = MoviesListFragment()
 
-        fun onMovieClickImplementaion(id: Int, activity: FragmentActivity){
-
-            // Create new fragment and transaction
-            Log.d(TAG," Clicked on the item $id")
-            val newFragment: Fragment = MovieDetailFragment.newInstance(id)
-            val transaction: FragmentTransaction = activity.getSupportFragmentManager().beginTransaction()
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack if needed
-            transaction.replace(R.id.fragment_container, newFragment)
-            transaction.addToBackStack(null)
-
-            // Commit the transaction
-            transaction.commit()
+        fun onMovieClickImplementaion(id: Int, navController: NavController){
+            val action = MoviesListFragmentDirections.actionMoviesListFragmentToMovieDetailFragment(id)
+                navController.navigate(action)
         }
     }
 
     override fun onMovieClick(id: Int) {
-        onMovieClickImplementaion(id,activity!!)
+        onMovieClickImplementaion(id,navController)
     }
 
 }
