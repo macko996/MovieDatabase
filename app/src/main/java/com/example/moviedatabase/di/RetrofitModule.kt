@@ -17,15 +17,19 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 object RetrofitModule {
 
+    const val BASE_URL = "https://api.themoviedb.org/3/"
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptorOkHttpClient(movieInterceptor: MovieInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(movieInterceptor)
+            .build()
+    }
+
     @Singleton
     @Provides
-    fun provideRetrofit() : TheMovieDbApi {
-
-        Log.d("RETROFIT", "Created retrofit")
-        val client = OkHttpClient.Builder()
-            .addInterceptor(MovieInterceptor())
-            .build()
-        val BASE_URL = "https://api.themoviedb.org/3/"
+    fun provideRetrofit(client: OkHttpClient) : TheMovieDbApi {
 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
