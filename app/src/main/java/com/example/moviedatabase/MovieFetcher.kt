@@ -142,4 +142,21 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return castLiveData
     }
 
+    fun getPersonDetails(personId: Int) : MutableLiveData<Cast> {
+        val personLiveData : MutableLiveData<Cast> = MutableLiveData()
+        val personCall : Call<Cast> = theMovieDbAPI.getPersonDetails(personId)
+        personCall.enqueue(object : Callback<Cast> {
+
+            override fun onFailure(call: Call<Cast>, t: Throwable) {
+                Log.e(TAG, "Failed getting the cast", t)
+            }
+            override fun onResponse(call: Call<Cast>, response: Response<Cast>){
+                Log.d(TAG,"Received cast ${response.body()}")
+                val person : Cast? = response.body()
+                personLiveData.value = person
+            }
+        })
+
+        return personLiveData
+    }
 }

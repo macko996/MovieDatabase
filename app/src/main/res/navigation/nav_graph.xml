@@ -32,5 +32,17 @@
         <action
             android:id="@+id/action_movieDetailFragment_self"
             app:destination="@id/movieDetailFragment" />
+        <action
+            android:id="@+id/action_movieDetailFragment_to_personFragment"
+            app:destination="@id/personFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personFragment"
+        android:name="com.example.moviedatabase.PersonFragment"
+        android:label="fragment_person"
+        tools:layout="@layout/fragment_person" >
+        <argument
+            android:name="person_id"
+            app:argType="integer" />
     </fragment>
 </navigation>

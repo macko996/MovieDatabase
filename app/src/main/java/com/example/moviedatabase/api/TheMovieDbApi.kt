@@ -1,5 +1,6 @@
 package com.example.moviedatabase.api
 
+import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
 import retrofit2.Call
 import retrofit2.http.GET
@@ -22,4 +23,7 @@ interface TheMovieDbApi {
 
     @GET("movie/{movie_id}/credits")
     fun getMovieCredits(@Path("movie_id") movieId: Int): Call<RootCastResponse>
+
+    @GET("person/{person_id}")
+    fun getPersonDetails(@Path("person_id") personId: Int): Call<Cast>
 }

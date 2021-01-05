@@ -18,7 +18,6 @@ import com.example.moviedatabase.model.Movie
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
-import kotlinx.android.synthetic.main.fragment_movies_list.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -31,7 +30,7 @@ private const val TAG = "MovieDetailsFragment"
  */
 @AndroidEntryPoint
 class MovieDetailFragment() : Fragment(),
-    MovieAdapter.MOnItemClickListener {
+    MovieAdapter.MOnItemClickListener, CastAdapter.OnPersoClickListener{
 
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 
@@ -116,7 +115,7 @@ class MovieDetailFragment() : Fragment(),
             viewLifecycleOwner,
             Observer {cast ->
                 Log.d(TAG, "Received cast: $cast")
-                castAdapter = CastAdapter(cast)
+                castAdapter = CastAdapter(cast,this)
                 castRecyclerView.adapter = castAdapter
         })
     }
@@ -124,6 +123,12 @@ class MovieDetailFragment() : Fragment(),
     override fun onMovieClick(id: Int) {
 
         val action = MovieDetailFragmentDirections.actionMovieDetailFragmentSelf(id)
+        navController.navigate(action)
+    }
+
+    override fun onPersonClick(personId: Int) {
+        val action = MovieDetailFragmentDirections
+            .actionMovieDetailFragmentToPersonFragment(personId)
         navController.navigate(action)
     }
 }

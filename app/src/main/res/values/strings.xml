@@ -11,4 +11,11 @@
     <string name="clear_search">Clear Search</string>
     <string name="cast">Cast</string>
 
+    <string name="photo_of_the_person">Photo of the person</string>
+    <string name="age">%d years old.</string>
+    <string name="number_of_movies">%d movies</string>
+    <string name="number_of_tv_shows">$d TV shows</string>
+    <string name="read_more">Read More</string>
+    <string name="read_less">Less</string>
+    <string name="biography">Biography</string>
 </resources>

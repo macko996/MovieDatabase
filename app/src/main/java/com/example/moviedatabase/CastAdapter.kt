@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.model.Cast
 import com.squareup.picasso.Picasso
 
-class CastAdapter (private val cast: List<Cast>) : RecyclerView.Adapter<CastAdapter.CastHolder>() {
+class CastAdapter (private val cast: List<Cast>, private val listener: OnPersoClickListener)
+    : RecyclerView.Adapter<CastAdapter.CastHolder>() {
     
         private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
@@ -43,10 +44,21 @@ class CastAdapter (private val cast: List<Cast>) : RecyclerView.Adapter<CastAdap
 
     inner class CastHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
 
+        init {
+            itemView.setOnClickListener{
+                val position = adapterPosition
+                val id = cast[position].id
+                listener.onPersonClick(id)
+            }
+        }
+
         var photo: ImageView = itemView.findViewById(R.id.photo)
         var name: TextView = itemView.findViewById(R.id.name)
         var character: TextView = itemView.findViewById(R.id.character)
 
     }
 
+    interface OnPersoClickListener{
+        fun onPersonClick(personId: Int)
+    }
 }
