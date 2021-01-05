@@ -13,10 +13,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Movie
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
+import kotlinx.android.synthetic.main.fragment_movies_list.*
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 private const val TAG = "MovieDetailsFragment"
 
@@ -31,11 +37,14 @@ class MovieDetailFragment() : Fragment(),
 
     lateinit var movieLiveData: MutableLiveData<Movie>
     lateinit var recommendedMoviesLiveData : MutableLiveData<ArrayList<Movie>>
+    lateinit var castLiveData: MutableLiveData<ArrayList<Cast>>
     private val args: MovieDetailFragmentArgs by navArgs()
     private lateinit var navController: NavController
 
     private lateinit var movieRecyclerView: RecyclerView
+    private lateinit var castRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var castAdapter : CastAdapter
     @Inject
     lateinit var movieFetcher: MovieFetcher
 
@@ -56,6 +65,11 @@ class MovieDetailFragment() : Fragment(),
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         movieRecyclerView.layoutManager = linearLayoutManager
+
+        castRecyclerView = view.findViewById(R.id.cast_recycler_view)
+        val castLinearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        castRecyclerView.layoutManager = castLinearLayoutManager
         return view
     }
 
@@ -80,7 +94,9 @@ class MovieDetailFragment() : Fragment(),
                 movie.genres.forEach { genre ->
                     genres.append(genre.name + " | ")
                 }
-                val revenueString = getString(R.string.box_office_revenue, movie.revenue)
+                val revenueFormatted = NumberFormat.getNumberInstance(Locale.ENGLISH)
+                    .format(movie.revenue).toString()
+                val revenueString = getString(R.string.box_office_revenue, revenueFormatted)
                 revenue.text = revenueString
             })
 
@@ -93,6 +109,16 @@ class MovieDetailFragment() : Fragment(),
                 movieAdapter = MovieAdapter(recommendedMovies, this)
                 movieRecyclerView.setAdapter(movieAdapter)
             })
+
+        //get cast
+        castLiveData = movieFetcher.getMovieCredits(movieId)
+        castLiveData.observe(
+            viewLifecycleOwner,
+            Observer {cast ->
+                Log.d(TAG, "Received cast: $cast")
+                castAdapter = CastAdapter(cast)
+                castRecyclerView.adapter = castAdapter
+        })
     }
 
     override fun onMovieClick(id: Int) {

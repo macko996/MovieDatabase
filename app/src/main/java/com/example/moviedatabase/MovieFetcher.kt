@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviedatabase.api.ResultsResponse
+import com.example.moviedatabase.api.RootCastResponse
 import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Movie
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -118,4 +121,25 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
 
         return movieListLiveData
     }
+
+    fun getMovieCredits(movieId: Int) : MutableLiveData<ArrayList<Cast>> {
+        val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
+        val castCall : Call<RootCastResponse> = theMovieDbAPI.getMovieCredits(movieId)
+        castCall.enqueue(object : Callback<RootCastResponse> {
+
+            override fun onFailure(call: Call<RootCastResponse>, t: Throwable) {
+                Log.e(TAG, "Failed getting the cast", t)
+            }
+            override fun onResponse(call: Call<RootCastResponse>, response: Response<RootCastResponse>){
+                Log.d(TAG,"Received cast ${response.body()}")
+                val rootCastResponse : RootCastResponse? = response.body()
+                val cast : ArrayList<Cast>? = (rootCastResponse?.cast ?: mutableListOf()) as ArrayList<Cast>?
+
+                castLiveData.value = cast
+            }
+        })
+
+        return castLiveData
+    }
+
 }

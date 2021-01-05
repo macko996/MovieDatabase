@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.model.Movie
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
