@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviedatabase.api.ResultsResponse
 import com.example.moviedatabase.api.RootCastResponse
+import com.example.moviedatabase.api.RootCreditsResponse
 import com.example.moviedatabase.api.TheMovieDbApi
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
@@ -158,5 +159,26 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         })
 
         return personLiveData
+    }
+
+    fun getPersonMovieCredits(personId: Int) : MutableLiveData<ArrayList<Movie>> {
+        val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
+        val personCreditsCall: Call<RootCreditsResponse> = theMovieDbAPI.getPersonMovieCredits(personId)
+
+        personCreditsCall.enqueue(object : Callback<RootCreditsResponse> {
+
+            override fun onFailure(call: Call<RootCreditsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed search", t)
+            }
+            override fun onResponse(call: Call<RootCreditsResponse>, response: Response<RootCreditsResponse>){
+                Log.d(TAG,"Received search ${response.body()}")
+                val rootCreditsResponse : RootCreditsResponse? = response.body()
+                val movies : ArrayList<Movie>? = (rootCreditsResponse?.cast ?: mutableListOf()) as ArrayList<Movie>?
+
+                movieListLiveData.value = movies
+            }
+        })
+
+        return movieListLiveData
     }
 }

@@ -26,4 +26,10 @@ interface TheMovieDbApi {
 
     @GET("person/{person_id}")
     fun getPersonDetails(@Path("person_id") personId: Int): Call<Cast>
+
+    @GET("person/{person_id}/movie_credits")
+    fun getPersonMovieCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>
+
+    @GET("person/{person_id}/tv_credits")
+    fun getPersonTVShowCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>
 }

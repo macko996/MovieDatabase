@@ -12,3 +12,7 @@ class ResultsResponse {
 class RootCastResponse {
     lateinit var cast: List<Cast>
 }
+
+class RootCreditsResponse {
+    lateinit var cast: List<Movie>
+}
