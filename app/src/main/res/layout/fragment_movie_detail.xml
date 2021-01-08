@@ -113,7 +113,20 @@
     <!-- Trailer    -->
 
     <!--Casting       -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cast"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cast_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <!--Reccomendations-->
     <TextView
         android:layout_width="match_parent"

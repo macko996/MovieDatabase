@@ -2,12 +2,21 @@
     <string name="app_name">MovieDatabase</string>
 
     <string name="the_movie_poster">The movie poster</string>
-    <string name="box_office_revenue">"Box Office Revenue : %d USD"</string>
+    <string name="box_office_revenue">"Box Office Revenue : %s USD"</string>
     <string name="movie_backdrop">Backdrop for the movie</string>
     <string name="runtime">%d min.</string>
     <string name="recommended_movies">Recommended Movies</string>
 
     <string name="search">Search</string>
     <string name="clear_search">Clear Search</string>
+    <string name="cast">Cast</string>
 
+    <string name="photo_of_the_person">Photo of the person</string>
+    <string name="age">%d years old.</string>
+    <string name="number_of_movies">%d movies</string>
+    <string name="number_of_tv_shows">$d TV shows</string>
+    <string name="read_more">Read More</string>
+    <string name="read_less">Less</string>
+    <string name="biography">Biography</string>
+    <string name="movies">Movies</string>
 </resources>

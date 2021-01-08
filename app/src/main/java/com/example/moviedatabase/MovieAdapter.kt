@@ -8,6 +8,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.model.Movie
 import com.squareup.picasso.Picasso
 
 class MovieAdapter (private val movies: List<Movie>, private val listener: MOnItemClickListener)
