@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 private const val TAG = "MovieDetailsFragment"
 
@@ -30,7 +29,7 @@ private const val TAG = "MovieDetailsFragment"
  */
 @AndroidEntryPoint
 class MovieDetailFragment() : Fragment(),
-    MovieAdapter.MOnItemClickListener, CastAdapter.OnPersoClickListener{
+    MovieAdapter.MOnItemClickListener, CastAdapter.OnPersonClickListener{
 
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 

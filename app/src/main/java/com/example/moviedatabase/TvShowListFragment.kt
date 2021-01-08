@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Fragment for displaying list of TV shows.
  */
 @AndroidEntryPoint
-class TvShowListFragment : Fragment() {
+class TvShowListFragment : Fragment(), TvShowsAdapter.OnTvShowClickListener {
 
     private lateinit var tvShowsRecyclerView: RecyclerView
     private lateinit var tvShowsAdapter: TvShowsAdapter
@@ -45,7 +45,7 @@ class TvShowListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_tv_show_list, container, false)
         tvShowsRecyclerView = view.findViewById(R.id.tv_shows_recycler_view)
         tvShowsRecyclerView.layoutManager = GridLayoutManager(context,2)
-        tvShowsAdapter = TvShowsAdapter(tvShowsList)
+        tvShowsAdapter = TvShowsAdapter(tvShowsList,this)
         tvShowsRecyclerView.setAdapter(tvShowsAdapter)
         return view
     }
@@ -62,4 +62,9 @@ class TvShowListFragment : Fragment() {
                 })
         }
 
+    override fun onTvShowClick(tvShowId: Int) {
+        val action = TvShowListFragmentDirections
+            .actionTvShowListFragmentToTvShowDetailsFragment(tvShowId)
+        navController.navigate(action)
+    }
 }

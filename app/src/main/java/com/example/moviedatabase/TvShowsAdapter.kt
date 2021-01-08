@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.model.TvShow
 import com.squareup.picasso.Picasso
 
-class TvShowsAdapter (private val tvShows: List<TvShow>)
+class TvShowsAdapter(private val tvShows: List<TvShow>, private val listener: OnTvShowClickListener)
     : RecyclerView.Adapter<TvShowsAdapter.TvShowHolder>() {
 
     private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
@@ -52,11 +52,23 @@ class TvShowsAdapter (private val tvShows: List<TvShow>)
 
     inner class TvShowHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        init {
+            itemView.setOnClickListener{
+                val position = adapterPosition
+                val id = tvShows[position].id
+                listener.onTvShowClick(id)
+            }
+        }
+
         var poster: ImageView = itemView.findViewById(R.id.poster)
         var name: TextView = itemView.findViewById(R.id.name)
         var firstAirDate: TextView = itemView.findViewById(R.id.first_air_date)
         var rating: TextView = itemView.findViewById(R.id.rating)
 
+    }
+
+    interface OnTvShowClickListener{
+        fun onTvShowClick(tvShowId: Int)
     }
 }
 

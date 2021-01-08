@@ -20,4 +20,8 @@
     <string name="biography">Biography</string>
     <string name="movies">Movies</string>
     <string name="tv_shows">TV Shows</string>
+    <string name="tv_backdrop">Backdrop image for the TV Show </string>
+    <string name="recommended_tv_shows">Recommended TV Shows</string>
+    <string name="number_of_seasons">%d seasons</string>
+    <string name="number_of_episodes">%d episodes</string>
 </resources>

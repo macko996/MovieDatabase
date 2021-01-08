@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_person.*
 import org.joda.time.LocalDate
 import org.joda.time.Period
 import org.joda.time.PeriodType
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 

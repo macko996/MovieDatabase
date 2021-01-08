@@ -52,5 +52,22 @@
         android:id="@+id/tvShowListFragment"
         android:name="com.example.moviedatabase.TvShowListFragment"
         android:label="TV Shows"
-        tools:layout="@layout/fragment_tv_show_list" />
+        tools:layout="@layout/fragment_tv_show_list" >
+        <action
+            android:id="@+id/action_tvShowListFragment_to_tvShowDetailsFragment"
+            app:destination="@id/tvShowDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvShowDetailsFragment"
+        android:name="com.example.moviedatabase.TvShowDetailsFragment"
+        android:label="fragment_tv_show_details"
+        tools:layout="@layout/fragment_tv_show_details" >
+        <argument
+            android:name="tvShowId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_tvShowDetailsFragment_self"
+            app:destination="@id/tvShowDetailsFragment" />
+    </fragment>
 </navigation>
