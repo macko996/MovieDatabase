@@ -17,6 +17,10 @@ import com.example.moviedatabase.model.Movie
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_person.*
+import org.joda.time.LocalDate
+import org.joda.time.Period
+import org.joda.time.PeriodType
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 
@@ -72,16 +76,22 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
             androidx.lifecycle.Observer { person ->
                 val photoUrl = PHOTO_BASE_URL + person.profilePath
                 Picasso.get().load(photoUrl).resize(0, 1280).into(photo)
+
                 name.text = person.name
                 birthday.text = person.birthday
                 biography.text = person.biography
+
+              val birthdayLocalDate : LocalDate = LocalDate.parse(person.birthday)
+              val ageInt = Period(birthdayLocalDate,LocalDate.now(), PeriodType.years()).years
+              age.text = getString(R.string.age,ageInt)
             }
         )
+
         personMovieCredits = movieFetcher.getPersonMovieCredits(personId)
         personMovieCredits.observe(
             viewLifecycleOwner,
             Observer { movies ->
-                number_of_movies.text = movies.size.toString()
+                number_of_movies.text = getString(R.string.number_of_movies,movies.size)
                 movieAdapter = MovieAdapter(movies, this)
                 movieRecyclerView.setAdapter(movieAdapter)
             }
