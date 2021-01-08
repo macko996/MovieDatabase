@@ -3,12 +3,10 @@ package com.example.moviedatabase
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.ResultsResponse
-import com.example.moviedatabase.api.RootCastResponse
-import com.example.moviedatabase.api.RootCreditsResponse
-import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.api.*
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -123,6 +121,10 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return movieListLiveData
     }
 
+    /**
+     * Gets the people who are credited a particular movies.
+     * @param movieId the id of the movie.
+     */
     fun getMovieCredits(movieId: Int) : MutableLiveData<ArrayList<Cast>> {
         val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
         val castCall : Call<RootCastResponse> = theMovieDbAPI.getMovieCredits(movieId)
@@ -143,6 +145,11 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return castLiveData
     }
 
+
+    /**
+     * Gets details about a person
+     * @param personId the id of the person.
+     */
     fun getPersonDetails(personId: Int) : MutableLiveData<Cast> {
         val personLiveData : MutableLiveData<Cast> = MutableLiveData()
         val personCall : Call<Cast> = theMovieDbAPI.getPersonDetails(personId)
@@ -161,6 +168,10 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return personLiveData
     }
 
+    /**
+     * Gets the movies for which a person is credited.
+     * @param personId the id of the person.
+     */
     fun getPersonMovieCredits(personId: Int) : MutableLiveData<ArrayList<Movie>> {
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
         val personCreditsCall: Call<RootCreditsResponse> = theMovieDbAPI.getPersonMovieCredits(personId)
@@ -181,4 +192,34 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
 
         return movieListLiveData
     }
+
+    /**
+     * Gets popular TV shows.
+     */
+    fun getPopularTvShows(): LiveData<ArrayList<TvShow>> {
+
+        val responseLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
+        val popularTvShowCall: Call<RootPopularTVShowsResponse> = theMovieDbAPI.getPopularTvShows()
+        popularTvShowCall.enqueue(object : Callback<RootPopularTVShowsResponse> {
+
+            override fun onFailure(call: Call<RootPopularTVShowsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed to fetch movies", t)
+            }
+
+            override fun onResponse(
+                call: Call<RootPopularTVShowsResponse>,
+                response: Response<RootPopularTVShowsResponse>){
+
+                    Log.d(TAG, "onResponse: ${response.body()}")
+                    val resultsResponse : RootPopularTVShowsResponse? = response.body()
+                    val tvShows : ArrayList<TvShow>? =
+                        (resultsResponse?.tvShows ?: mutableListOf()) as ArrayList<TvShow>?
+
+                    responseLiveData.value = tvShows
+            }
+        })
+
+        return responseLiveData
+    }
+
 }

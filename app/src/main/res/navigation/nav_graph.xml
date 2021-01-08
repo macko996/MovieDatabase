@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/moviesListFragment"
         android:name="com.example.moviedatabase.MoviesListFragment"
-        android:label="MoviesListFragment" >
+        android:label="Movies">
         <action
             android:id="@+id/action_moviesListFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment" />
@@ -17,8 +17,8 @@
             app:destination="@id/moviesListFragment" />
         <argument
             android:name="searchQuery"
-            app:argType="string"
             android:defaultValue="@null"
+            app:argType="string"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -48,4 +48,9 @@
             android:id="@+id/action_personFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/tvShowListFragment"
+        android:name="com.example.moviedatabase.TvShowListFragment"
+        android:label="TV Shows"
+        tools:layout="@layout/fragment_tv_show_list" />
 </navigation>
