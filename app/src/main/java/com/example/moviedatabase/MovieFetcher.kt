@@ -273,4 +273,31 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return recommendedTvShowsLiveData
     }
 
+    /**
+     * Search for TV Show.
+     * @param query the query we search for
+     */
+    fun searchTvShow(query: String): LiveData<ArrayList<TvShow>> {
+
+        val tvShowListLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
+        val tvShowSearchCall: Call<RootTVShowsResponse> = theMovieDbAPI.searchTvShows(query)
+
+        tvShowSearchCall.enqueue(object : Callback<RootTVShowsResponse> {
+
+            override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed search", t)
+            }
+            override fun onResponse(
+                call: Call<RootTVShowsResponse>,
+                response: Response<RootTVShowsResponse>){
+
+                val resultsResponse : RootTVShowsResponse? = response.body()
+                val tvShows : ArrayList<TvShow>? = (resultsResponse?.tvShows ?: mutableListOf()) as ArrayList<TvShow>
+
+                tvShowListLiveData.value = tvShows
+            }
+        })
+
+        return tvShowListLiveData
+    }
 }

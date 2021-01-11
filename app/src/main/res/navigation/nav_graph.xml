@@ -56,6 +56,14 @@
         <action
             android:id="@+id/action_tvShowListFragment_to_tvShowDetailsFragment"
             app:destination="@id/tvShowDetailsFragment" />
+        <argument
+            android:name="searchQuery"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_tvShowListFragment_self"
+            app:destination="@id/tvShowListFragment" />
     </fragment>
     <fragment
         android:id="@+id/tvShowDetailsFragment"

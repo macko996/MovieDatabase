@@ -22,3 +22,7 @@ class RootTVShowsResponse {
     @SerializedName("results")
     lateinit var tvShows: List<TvShow>
 }
+
+class RootTvShowCreditsResponse {
+    lateinit var cast: List<TvShow>
+}

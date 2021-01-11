@@ -42,4 +42,7 @@ interface TheMovieDbApi {
 
     @GET("person/{person_id}/tv_credits")
     fun getPersonTVShowCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>
+
+    @GET("search/tv")
+    fun searchTvShows(@Query ("query") query: String) : Call<RootTVShowsResponse>
 }
