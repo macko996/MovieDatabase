@@ -80,5 +80,8 @@
         <action
             android:id="@+id/action_tvShowDetailsFragment_self"
             app:destination="@id/tvShowDetailsFragment" />
+        <action
+            android:id="@+id/action_tvShowDetailsFragment_to_personFragment"
+            app:destination="@id/personFragment" />
     </fragment>
 </navigation>

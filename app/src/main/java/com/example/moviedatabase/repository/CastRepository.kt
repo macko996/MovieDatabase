@@ -66,4 +66,28 @@ class CastRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbAp
         return personLiveData
     }
 
+    /**
+     * Gets the people who are credited for a particular TV Show.
+     * @param tvShowId the id of the tv show.
+     */
+    fun getTvShowCredits(tvShowId: Int) : MutableLiveData<ArrayList<Cast>> {
+        val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
+        val castCall : Call<RootCastResponse> = theMovieDbAPI.getTvShowCredits(tvShowId)
+        castCall.enqueue(object : Callback<RootCastResponse> {
+
+            override fun onFailure(call: Call<RootCastResponse>, t: Throwable) {
+                Log.e(TAG, "Failed getting the cast", t)
+            }
+            override fun onResponse(call: Call<RootCastResponse>, response: Response<RootCastResponse>){
+                Log.d(TAG,"Received cast ${response.body()}")
+                val rootCastResponse : RootCastResponse? = response.body()
+                val cast : ArrayList<Cast>? = (rootCastResponse?.cast ?: mutableListOf()) as ArrayList<Cast>?
+
+                castLiveData.value = cast
+            }
+        })
+
+        return castLiveData
+    }
+
 }

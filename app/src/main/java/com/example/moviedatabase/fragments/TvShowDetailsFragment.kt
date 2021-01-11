@@ -17,6 +17,7 @@ import com.example.moviedatabase.adapters.CastAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.TvShow
+import com.example.moviedatabase.repository.CastRepository
 import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,7 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class TvShowDetailsFragment : Fragment(),
-    TvShowsAdapter.OnTvShowClickListener {
+    TvShowsAdapter.OnTvShowClickListener, CastAdapter.OnPersonClickListener {
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 
     lateinit var tvShowLiveData: MutableLiveData<TvShow>
@@ -43,6 +44,8 @@ class TvShowDetailsFragment : Fragment(),
     private lateinit var castAdapter : CastAdapter
     @Inject
     lateinit var tvShowsRepository: TvShowsRepository
+    @Inject
+    lateinit var castRepository: CastRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +96,15 @@ class TvShowDetailsFragment : Fragment(),
                 number_of_episodes.text = getString(R.string.number_of_episodes,tvShow.numberOfEpisodes)
             })
 
+        //get cast
+        castLiveData = castRepository.getTvShowCredits(tvId)
+        castLiveData.observe(
+            viewLifecycleOwner,
+            Observer { cast ->
+                castAdapter = CastAdapter(cast, this)
+                castRecyclerView.setAdapter(castAdapter)
+            })
+
         //get recommended TV shows
         recommendedTvShowsLiveData = tvShowsRepository.getTvShowRecommendations(tvId)
         recommendedTvShowsLiveData.observe(
@@ -107,6 +119,12 @@ class TvShowDetailsFragment : Fragment(),
     override fun onTvShowClick(tvShowId: Int) {
         val action = TvShowDetailsFragmentDirections
             .actionTvShowDetailsFragmentSelf(tvShowId)
+        navController.navigate(action)
+    }
+
+    override fun onPersonClick(personId: Int) {
+        val action = TvShowDetailsFragmentDirections
+            .actionTvShowDetailsFragmentToPersonFragment(personId)
         navController.navigate(action)
     }
 
