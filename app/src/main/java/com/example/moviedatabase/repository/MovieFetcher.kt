@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviedatabase.api.*
-import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
-import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,10 +15,10 @@ private const val TAG = "MovieFetcher"
 
 /**
  * This class is used for executing the Call objects from TheMovieDbApi
- * @see TheMovieDbApi
+ * @see MovieService
  */
 @Singleton
-class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi) {
+class MovieFetcher @Inject constructor(private val movieService: MovieService) {
 
 
     /**
@@ -28,7 +26,7 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
      */
     fun fetchPopularMovies(): LiveData<ArrayList<Movie>> {
         val responseLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val popularMoviesCall: Call<ResultsResponse> = theMovieDbAPI.fetchMovies()
+        val popularMoviesCall: Call<ResultsResponse> = movieService.fetchMovies()
 
         popularMoviesCall.enqueue(object : Callback<ResultsResponse> {
             override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
@@ -52,7 +50,7 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
     fun fetchMovieDetails(id:Int): MutableLiveData<Movie> {
 
         val movieLiveData: MutableLiveData<Movie> = MutableLiveData()
-        val movieDetailsCall: Call<Movie> = theMovieDbAPI.fetchMovieDetails(id)
+        val movieDetailsCall: Call<Movie> = movieService.fetchMovieDetails(id)
 
         movieDetailsCall.enqueue(object : Callback<Movie> {
 
@@ -78,7 +76,7 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
     fun fetchMovieRecommendations(movieId: Int): MutableLiveData<ArrayList<Movie>> {
 
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val movieRecommendationsCall: Call<ResultsResponse> = theMovieDbAPI.fetchMovieRecommendations(movieId)
+        val movieRecommendationsCall: Call<ResultsResponse> = movieService.fetchMovieRecommendations(movieId)
 
         movieRecommendationsCall.enqueue(object : Callback<ResultsResponse> {
             override fun onFailure(call: Call<ResultsResponse>, t: Throwable) {
@@ -102,7 +100,7 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
     fun searchMovie(query: String): LiveData<ArrayList<Movie>> {
 
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val movieSearchCall: Call<ResultsResponse> = theMovieDbAPI.searchMovie(query)
+        val movieSearchCall: Call<ResultsResponse> = movieService.searchMovie(query)
 
         movieSearchCall.enqueue(object : Callback<ResultsResponse> {
 
@@ -127,7 +125,7 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
      */
     fun getPersonMovieCredits(personId: Int) : MutableLiveData<ArrayList<Movie>> {
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
-        val personCreditsCall: Call<RootCreditsResponse> = theMovieDbAPI.getPersonMovieCredits(personId)
+        val personCreditsCall: Call<RootCreditsResponse> = movieService.getPersonMovieCredits(personId)
 
         personCreditsCall.enqueue(object : Callback<RootCreditsResponse> {
 
