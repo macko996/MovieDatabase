@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.R
 import com.example.moviedatabase.model.Movie
 import com.squareup.picasso.Picasso
 

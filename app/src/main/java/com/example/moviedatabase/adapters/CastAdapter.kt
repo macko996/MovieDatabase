@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.R
 import com.example.moviedatabase.model.Cast
 import com.squareup.picasso.Picasso
 

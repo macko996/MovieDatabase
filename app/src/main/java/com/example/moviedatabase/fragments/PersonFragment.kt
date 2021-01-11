@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.adapters.MovieAdapter
+import com.example.moviedatabase.R
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.MovieFetcher
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_person.*
@@ -27,7 +31,8 @@ import javax.inject.Inject
  * A simple [Fragment] subclass.
  */
 @AndroidEntryPoint
-class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
+class PersonFragment : Fragment(),
+    MovieAdapter.MOnItemClickListener {
 
     private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
 
@@ -41,6 +46,8 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
     private lateinit var navController: NavController
     @Inject
     lateinit var movieFetcher: MovieFetcher
+    @Inject
+    lateinit var castRepository: CastRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +76,7 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
         personId = args.personId
 
         //get details about the person
-        personLiveData = movieFetcher.getPersonDetails(personId)
+        personLiveData = castRepository.getPersonDetails(personId)
         personLiveData.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { person ->
@@ -99,7 +106,8 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
     }
 
     override fun onMovieClick(id: Int) {
-        val action = PersonFragmentDirections.actionPersonFragmentToMovieDetailFragment(id)
+        val action = PersonFragmentDirections
+            .actionPersonFragmentToMovieDetailFragment(id)
         navController.navigate(action)
     }
 

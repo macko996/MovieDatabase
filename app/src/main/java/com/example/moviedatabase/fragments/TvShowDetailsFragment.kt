@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.*
+import com.example.moviedatabase.adapters.CastAdapter
+import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.TvShow
+import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_tv_show_details.*
@@ -23,7 +27,8 @@ import javax.inject.Inject
  * A Fragment for displaying details about a TV Show.
  */
 @AndroidEntryPoint
-class TvShowDetailsFragment : Fragment(), TvShowsAdapter.OnTvShowClickListener {
+class TvShowDetailsFragment : Fragment(),
+    TvShowsAdapter.OnTvShowClickListener {
     private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 
     lateinit var tvShowLiveData: MutableLiveData<TvShow>
@@ -37,7 +42,7 @@ class TvShowDetailsFragment : Fragment(), TvShowsAdapter.OnTvShowClickListener {
     private lateinit var castRecyclerView: RecyclerView
     private lateinit var castAdapter : CastAdapter
     @Inject
-    lateinit var movieFetcher: MovieFetcher
+    lateinit var tvShowsRepository: TvShowsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,7 @@ class TvShowDetailsFragment : Fragment(), TvShowsAdapter.OnTvShowClickListener {
         val tvId: Int = args.tvShowId
 
         //get details about the movie
-        tvShowLiveData = movieFetcher.getTvShowDetails(tvId)
+        tvShowLiveData = tvShowsRepository.getTvShowDetails(tvId)
         tvShowLiveData.observe(
             viewLifecycleOwner,
             Observer { tvShow ->
@@ -89,7 +94,7 @@ class TvShowDetailsFragment : Fragment(), TvShowsAdapter.OnTvShowClickListener {
             })
 
         //get recommended TV shows
-        recommendedTvShowsLiveData = movieFetcher.getTvShowRecommendations(tvId)
+        recommendedTvShowsLiveData = tvShowsRepository.getTvShowRecommendations(tvId)
         recommendedTvShowsLiveData.observe(
             viewLifecycleOwner,
             Observer { recommendedTvShows ->

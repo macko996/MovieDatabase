@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +13,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.*
+import com.example.moviedatabase.adapters.CastAdapter
+import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.MovieFetcher
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
@@ -45,6 +50,8 @@ class MovieDetailFragment() : Fragment(),
     private lateinit var castAdapter : CastAdapter
     @Inject
     lateinit var movieFetcher: MovieFetcher
+    @Inject
+    lateinit var castRepository: CastRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,7 +116,7 @@ class MovieDetailFragment() : Fragment(),
             })
 
         //get cast
-        castLiveData = movieFetcher.getMovieCredits(movieId)
+        castLiveData = castRepository.getMovieCredits(movieId)
         castLiveData.observe(
             viewLifecycleOwner,
             Observer {cast ->

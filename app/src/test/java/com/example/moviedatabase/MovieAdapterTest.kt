@@ -1,5 +1,6 @@
 package com.example.moviedatabase
 
+import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Movie
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +18,10 @@ class MovieAdapterTest {
     fun setUp() {
         val listener = mock(MovieAdapter.MOnItemClickListener::class.java)
         val movie = Movie()
-        adapter = MovieAdapter(listOf(movie,movie),listener)
+        adapter = MovieAdapter(
+            listOf(movie, movie),
+            listener
+        )
     }
 
     @Test

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/moviesListFragment"
-        android:name="com.example.moviedatabase.MoviesListFragment"
+        android:name="com.example.moviedatabase.fragments.MoviesListFragment"
         android:label="Movies">
         <action
             android:id="@+id/action_moviesListFragment_to_movieDetailFragment"
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/movieDetailFragment"
-        android:name="com.example.moviedatabase.MovieDetailFragment"
+        android:name="com.example.moviedatabase.fragments.MovieDetailFragment"
         android:label="fragment_movie_detail"
         tools:layout="@layout/fragment_movie_detail" >
         <argument
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/personFragment"
-        android:name="com.example.moviedatabase.PersonFragment"
+        android:name="com.example.moviedatabase.fragments.PersonFragment"
         android:label="fragment_person"
         tools:layout="@layout/fragment_person" >
         <argument
@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/tvShowListFragment"
-        android:name="com.example.moviedatabase.TvShowListFragment"
+        android:name="com.example.moviedatabase.fragments.TvShowListFragment"
         android:label="TV Shows"
         tools:layout="@layout/fragment_tv_show_list" >
         <action
@@ -67,7 +67,7 @@
     </fragment>
     <fragment
         android:id="@+id/tvShowDetailsFragment"
-        android:name="com.example.moviedatabase.TvShowDetailsFragment"
+        android:name="com.example.moviedatabase.fragments.TvShowDetailsFragment"
         android:label="fragment_tv_show_details"
         tools:layout="@layout/fragment_tv_show_details" >
         <argument
