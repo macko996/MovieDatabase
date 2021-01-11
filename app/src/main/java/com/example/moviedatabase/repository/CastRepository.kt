@@ -2,8 +2,9 @@ package com.example.moviedatabase.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.moviedatabase.api.CastService
 import com.example.moviedatabase.api.RootCastResponse
-import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.api.MovieService
 import com.example.moviedatabase.model.Cast
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,10 +16,10 @@ private const val TAG = "CastRepository"
 
 /**
  * This class is used for retrieving data about people.
- * @see TheMovieDbApi
+ * @see MovieService
  */
 @Singleton
-class CastRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbApi) {
+class CastRepository @Inject constructor(private val castService: CastService) {
 
     /**
      * Gets the people who are credited a particular movies.
@@ -26,7 +27,7 @@ class CastRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbAp
      */
     fun getMovieCredits(movieId: Int) : MutableLiveData<ArrayList<Cast>> {
         val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
-        val castCall : Call<RootCastResponse> = theMovieDbAPI.getMovieCredits(movieId)
+        val castCall : Call<RootCastResponse> = castService.getMovieCredits(movieId)
         castCall.enqueue(object : Callback<RootCastResponse> {
 
             override fun onFailure(call: Call<RootCastResponse>, t: Throwable) {
@@ -50,7 +51,7 @@ class CastRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbAp
      */
     fun getPersonDetails(personId: Int) : MutableLiveData<Cast> {
         val personLiveData : MutableLiveData<Cast> = MutableLiveData()
-        val personCall : Call<Cast> = theMovieDbAPI.getPersonDetails(personId)
+        val personCall : Call<Cast> = castService.getPersonDetails(personId)
         personCall.enqueue(object : Callback<Cast> {
 
             override fun onFailure(call: Call<Cast>, t: Throwable) {
@@ -72,7 +73,7 @@ class CastRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbAp
      */
     fun getTvShowCredits(tvShowId: Int) : MutableLiveData<ArrayList<Cast>> {
         val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
-        val castCall : Call<RootCastResponse> = theMovieDbAPI.getTvShowCredits(tvShowId)
+        val castCall : Call<RootCastResponse> = castService.getTvShowCredits(tvShowId)
         castCall.enqueue(object : Callback<RootCastResponse> {
 
             override fun onFailure(call: Call<RootCastResponse>, t: Throwable) {

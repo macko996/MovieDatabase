@@ -1,8 +1,9 @@
 package com.example.moviedatabase.di
 
-import android.util.Log
+import com.example.moviedatabase.api.CastService
 import com.example.moviedatabase.api.MovieInterceptor
-import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.api.MovieService
+import com.example.moviedatabase.api.TvShowsService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +20,9 @@ object RetrofitModule {
 
     const val BASE_URL = "https://api.themoviedb.org/3/"
 
+    /**
+     * Provides OkHttpClient
+     */
     @Provides
     @Singleton
     fun provideAuthInterceptorOkHttpClient(movieInterceptor: MovieInterceptor): OkHttpClient {
@@ -27,15 +31,47 @@ object RetrofitModule {
             .build()
     }
 
+    /**
+     * Provides instance of Retrofit
+     */
     @Singleton
     @Provides
-    fun provideRetrofit(client: OkHttpClient) : TheMovieDbApi {
+    fun provideRetrofit(client: OkHttpClient) : Retrofit {
 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-            .create(TheMovieDbApi::class.java)
+    }
+
+    /**
+     * Provides instance of TvShowsService
+     */
+    @Singleton
+    @Provides
+    fun provideMovieService(retrofit: Retrofit) : MovieService {
+
+        return retrofit.create(MovieService::class.java)
+    }
+
+    /**
+     * Provides instance of TvShowsService
+     */
+    @Singleton
+    @Provides
+    fun provideTvShowService(retrofit: Retrofit) : TvShowsService {
+
+        return retrofit.create(TvShowsService::class.java)
+    }
+
+    /**
+     * Provides instance of CastService
+     */
+    @Singleton
+    @Provides
+    fun provideCastService(retrofit: Retrofit) : CastService {
+
+        return retrofit.create(CastService::class.java)
     }
 }

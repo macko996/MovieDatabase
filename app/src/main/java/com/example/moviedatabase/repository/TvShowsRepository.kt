@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviedatabase.api.RootTVShowsResponse
 import com.example.moviedatabase.api.RootTvShowCreditsResponse
-import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.api.MovieService
+import com.example.moviedatabase.api.TvShowsService
 import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,10 +18,12 @@ private const val TAG = "TvShowsRepository"
 
 /**
  * This class is used for retrieving data about TV Shows.
- * @see TheMovieDbApi
+ * @see MovieService
  */
 @Singleton
-class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieDbApi) {
+class TvShowsRepository @Inject constructor(
+    private val movieService: MovieService
+    ,private val tvShowsService: TvShowsService) {
 
     /**
      * Gets popular TV shows.
@@ -28,7 +31,7 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
     fun getPopularTvShows(): LiveData<ArrayList<TvShow>> {
 
         val responseLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowCall: Call<RootTVShowsResponse> = theMovieDbAPI.getPopularTvShows()
+        val tvShowCall: Call<RootTVShowsResponse> = tvShowsService.getPopularTvShows()
         tvShowCall.enqueue(object : Callback<RootTVShowsResponse> {
 
             override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
@@ -58,7 +61,7 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
     fun getTvShowDetails(tvId: Int): MutableLiveData<TvShow> {
 
         val tvShowLiveData: MutableLiveData<TvShow> = MutableLiveData()
-        val tvShowDetailsCall: Call<TvShow> = theMovieDbAPI.getTvShowDetails(tvId)
+        val tvShowDetailsCall: Call<TvShow> = tvShowsService.getTvShowDetails(tvId)
 
         tvShowDetailsCall.enqueue(object : Callback<TvShow> {
 
@@ -85,7 +88,8 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
     fun getTvShowRecommendations(tvId: Int): MutableLiveData<ArrayList<TvShow>> {
 
         val recommendedTvShowsLiveData: MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowRecommendationsCall: Call<RootTVShowsResponse> = theMovieDbAPI.getTvShowRecommendations(tvId)
+        val tvShowRecommendationsCall: Call<RootTVShowsResponse> = tvShowsService
+            .getTvShowRecommendations(tvId)
 
         tvShowRecommendationsCall.enqueue(object : Callback<RootTVShowsResponse> {
 
@@ -93,7 +97,8 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
                 Log.e(TAG, "Failed to fetch recommendations about TV show $tvId", t)
             }
 
-            override fun onResponse(call: Call<RootTVShowsResponse>, response: Response<RootTVShowsResponse>) {
+            override fun onResponse(call: Call<RootTVShowsResponse>,
+                                    response: Response<RootTVShowsResponse>) {
 
                 val recommendedTvShows = response.body()?.tvShows
                 recommendedTvShowsLiveData.value = recommendedTvShows as ArrayList<TvShow>?
@@ -110,7 +115,7 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
     fun searchTvShow(query: String): LiveData<ArrayList<TvShow>> {
 
         val tvShowListLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowSearchCall: Call<RootTVShowsResponse> = theMovieDbAPI.searchTvShows(query)
+        val tvShowSearchCall: Call<RootTVShowsResponse> = tvShowsService.searchTvShows(query)
 
         tvShowSearchCall.enqueue(object : Callback<RootTVShowsResponse> {
 
@@ -138,13 +143,15 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
      */
     fun getPersonTvShowCredits(personId: Int) : MutableLiveData<ArrayList<TvShow>> {
         val tvShowsLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowsCall : Call<RootTvShowCreditsResponse> = theMovieDbAPI.getPersonTVShowCredits(personId)
+        val tvShowsCall : Call<RootTvShowCreditsResponse> = tvShowsService
+            .getPersonTVShowCredits(personId)
         tvShowsCall.enqueue(object : Callback<RootTvShowCreditsResponse> {
 
             override fun onFailure(call: Call<RootTvShowCreditsResponse>, t: Throwable) {
                 Log.e(TAG, "Failed getting the cast", t)
             }
-            override fun onResponse(call: Call<RootTvShowCreditsResponse>, response: Response<RootTvShowCreditsResponse>){
+            override fun onResponse(call: Call<RootTvShowCreditsResponse>,
+                                    response: Response<RootTvShowCreditsResponse>){
 
                 val rootResponse : RootTvShowCreditsResponse? = response.body()
                 val tvShows : ArrayList<TvShow>? = (rootResponse?.cast ?: mutableListOf()) as ArrayList<TvShow>?
