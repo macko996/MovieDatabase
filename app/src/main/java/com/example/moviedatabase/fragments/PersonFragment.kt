@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,15 +12,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.adapters.MovieAdapter
+import com.example.moviedatabase.R
+import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.model.TvShow
+import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_person.*
 import org.joda.time.LocalDate
 import org.joda.time.Period
 import org.joda.time.PeriodType
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 
@@ -28,20 +34,27 @@ import javax.inject.Inject
  * A simple [Fragment] subclass.
  */
 @AndroidEntryPoint
-class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
+class PersonFragment : Fragment(),
+    MovieAdapter.MOnItemClickListener , TvShowsAdapter.OnTvShowClickListener{
 
     private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
 
     var personId : Int = 0
     lateinit var personLiveData: MutableLiveData<Cast>
     lateinit var personMovieCredits: MutableLiveData<ArrayList<Movie>>
-    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<Movie>>
+    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var tvShowsRecyclerView: RecyclerView
+    private lateinit var tvShowsAdapter: TvShowsAdapter
     private val args: PersonFragmentArgs by navArgs()
     private lateinit var navController: NavController
     @Inject
     lateinit var movieFetcher: MovieFetcher
+    @Inject
+    lateinit var castRepository: CastRepository
+    @Inject
+    lateinit var tvShowRepository: TvShowsRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +75,11 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         movieRecyclerView.layoutManager = linearLayoutManager
 
+        tvShowsRecyclerView = view.findViewById(R.id.tv_shows_recycler_view)
+        val tvShowsLinearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        tvShowsRecyclerView.layoutManager = tvShowsLinearLayoutManager
+
         return view
     }
 
@@ -70,7 +88,7 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
         personId = args.personId
 
         //get details about the person
-        personLiveData = movieFetcher.getPersonDetails(personId)
+        personLiveData = castRepository.getPersonDetails(personId)
         personLiveData.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { person ->
@@ -97,11 +115,28 @@ class PersonFragment : Fragment(),MovieAdapter.MOnItemClickListener {
             }
         )
 
+        personTVShowsCredits = tvShowRepository.getPersonTvShowCredits(personId)
+        personTVShowsCredits.observe(
+            viewLifecycleOwner,
+            Observer {tvShows ->
+                number_of_tv_shows.text = getString(R.string.number_of_tv_shows, tvShows.size)
+                tvShowsAdapter = TvShowsAdapter(tvShows, this)
+                tvShowsRecyclerView.adapter = tvShowsAdapter
+
+            }
+        )
+
     }
 
     override fun onMovieClick(id: Int) {
-        val action = PersonFragmentDirections.actionPersonFragmentToMovieDetailFragment(id)
+        val action = PersonFragmentDirections
+            .actionPersonFragmentToMovieDetailFragment(id)
         navController.navigate(action)
     }
 
+    override fun onTvShowClick(tvShowId: Int) {
+        val action = PersonFragmentDirections
+            .actionPersonFragmentToTvShowDetailsFragment(tvShowId)
+        navController.navigate(action)
+    }
 }

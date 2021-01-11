@@ -14,9 +14,14 @@
     <string name="photo_of_the_person">Photo of the person</string>
     <string name="age">%d years old.</string>
     <string name="number_of_movies">%d movies</string>
-    <string name="number_of_tv_shows">$d TV shows</string>
+    <string name="number_of_tv_shows">%d TV shows</string>
     <string name="read_more">Read More</string>
     <string name="read_less">Less</string>
     <string name="biography">Biography</string>
     <string name="movies">Movies</string>
+    <string name="tv_shows">TV Shows</string>
+    <string name="tv_backdrop">Backdrop image for the TV Show </string>
+    <string name="recommended_tv_shows">Recommended TV Shows</string>
+    <string name="number_of_seasons">%d seasons</string>
+    <string name="number_of_episodes">%d episodes</string>
 </resources>

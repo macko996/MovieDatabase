@@ -1,14 +1,12 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.ResultsResponse
-import com.example.moviedatabase.api.RootCastResponse
-import com.example.moviedatabase.api.RootCreditsResponse
-import com.example.moviedatabase.api.TheMovieDbApi
+import com.example.moviedatabase.api.*
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -123,44 +121,10 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
         return movieListLiveData
     }
 
-    fun getMovieCredits(movieId: Int) : MutableLiveData<ArrayList<Cast>> {
-        val castLiveData : MutableLiveData<ArrayList<Cast>> = MutableLiveData()
-        val castCall : Call<RootCastResponse> = theMovieDbAPI.getMovieCredits(movieId)
-        castCall.enqueue(object : Callback<RootCastResponse> {
-
-            override fun onFailure(call: Call<RootCastResponse>, t: Throwable) {
-                Log.e(TAG, "Failed getting the cast", t)
-            }
-            override fun onResponse(call: Call<RootCastResponse>, response: Response<RootCastResponse>){
-                Log.d(TAG,"Received cast ${response.body()}")
-                val rootCastResponse : RootCastResponse? = response.body()
-                val cast : ArrayList<Cast>? = (rootCastResponse?.cast ?: mutableListOf()) as ArrayList<Cast>?
-
-                castLiveData.value = cast
-            }
-        })
-
-        return castLiveData
-    }
-
-    fun getPersonDetails(personId: Int) : MutableLiveData<Cast> {
-        val personLiveData : MutableLiveData<Cast> = MutableLiveData()
-        val personCall : Call<Cast> = theMovieDbAPI.getPersonDetails(personId)
-        personCall.enqueue(object : Callback<Cast> {
-
-            override fun onFailure(call: Call<Cast>, t: Throwable) {
-                Log.e(TAG, "Failed getting the cast", t)
-            }
-            override fun onResponse(call: Call<Cast>, response: Response<Cast>){
-                Log.d(TAG,"Received cast ${response.body()}")
-                val person : Cast? = response.body()
-                personLiveData.value = person
-            }
-        })
-
-        return personLiveData
-    }
-
+    /**
+     * Gets the movies for which a person is credited.
+     * @param personId the id of the person.
+     */
     fun getPersonMovieCredits(personId: Int) : MutableLiveData<ArrayList<Movie>> {
         val movieListLiveData : MutableLiveData<ArrayList<Movie>> = MutableLiveData()
         val personCreditsCall: Call<RootCreditsResponse> = theMovieDbAPI.getPersonMovieCredits(personId)
@@ -181,4 +145,5 @@ class MovieFetcher @Inject constructor(private val theMovieDbAPI: TheMovieDbApi)
 
         return movieListLiveData
     }
+
 }

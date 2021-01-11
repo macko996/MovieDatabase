@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.adapters.MovieAdapter
+import com.example.moviedatabase.R
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.repository.MovieFetcher
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -97,7 +100,8 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
 
                     Log.d(TAG, "QueryTextSubmit: $query")
-                    val action = MoviesListFragmentDirections.actionMoviesListFragmentSelf(query)
+                    val action = MoviesListFragmentDirections
+                        .actionMoviesListFragmentSelf(query)
                     navController.navigate(action)
                     return true
                 }
@@ -118,8 +122,9 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
         fun newInstance() = MoviesListFragment()
 
         fun onMovieClickImplementaion(id: Int, navController: NavController){
-            val action = MoviesListFragmentDirections.actionMoviesListFragmentToMovieDetailFragment(id)
-                navController.navigate(action)
+            val action = MoviesListFragmentDirections
+                .actionMoviesListFragmentToMovieDetailFragment(id)
+            navController.navigate(action)
         }
     }
 

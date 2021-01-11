@@ -1,4 +1,4 @@
-package com.example.moviedatabase
+package com.example.moviedatabase.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedatabase.R
 import com.example.moviedatabase.model.Cast
 import com.squareup.picasso.Picasso
 
-class CastAdapter (private val cast: List<Cast>, private val listener: OnPersoClickListener)
+class CastAdapter (private val cast: List<Cast>, private val listener: OnPersonClickListener)
     : RecyclerView.Adapter<CastAdapter.CastHolder>() {
     
         private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
@@ -58,7 +59,7 @@ class CastAdapter (private val cast: List<Cast>, private val listener: OnPersoCl
 
     }
 
-    interface OnPersoClickListener{
+    interface OnPersonClickListener{
         fun onPersonClick(personId: Int)
     }
 }
