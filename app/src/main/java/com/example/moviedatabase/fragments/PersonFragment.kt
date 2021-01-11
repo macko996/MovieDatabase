@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.R
+import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
+import com.example.moviedatabase.model.TvShow
 import com.example.moviedatabase.repository.CastRepository
 import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_person.*
@@ -32,22 +35,26 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class PersonFragment : Fragment(),
-    MovieAdapter.MOnItemClickListener {
+    MovieAdapter.MOnItemClickListener , TvShowsAdapter.OnTvShowClickListener{
 
     private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
 
     var personId : Int = 0
     lateinit var personLiveData: MutableLiveData<Cast>
     lateinit var personMovieCredits: MutableLiveData<ArrayList<Movie>>
-    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<Movie>>
+    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var tvShowsRecyclerView: RecyclerView
+    private lateinit var tvShowsAdapter: TvShowsAdapter
     private val args: PersonFragmentArgs by navArgs()
     private lateinit var navController: NavController
     @Inject
     lateinit var movieFetcher: MovieFetcher
     @Inject
     lateinit var castRepository: CastRepository
+    @Inject
+    lateinit var tvShowRepository: TvShowsRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +74,11 @@ class PersonFragment : Fragment(),
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         movieRecyclerView.layoutManager = linearLayoutManager
+
+        tvShowsRecyclerView = view.findViewById(R.id.tv_shows_recycler_view)
+        val tvShowsLinearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        tvShowsRecyclerView.layoutManager = tvShowsLinearLayoutManager
 
         return view
     }
@@ -103,6 +115,17 @@ class PersonFragment : Fragment(),
             }
         )
 
+        personTVShowsCredits = tvShowRepository.getPersonTvShowCredits(personId)
+        personTVShowsCredits.observe(
+            viewLifecycleOwner,
+            Observer {tvShows ->
+                number_of_tv_shows.text = getString(R.string.number_of_tv_shows, tvShows.size)
+                tvShowsAdapter = TvShowsAdapter(tvShows, this)
+                tvShowsRecyclerView.adapter = tvShowsAdapter
+
+            }
+        )
+
     }
 
     override fun onMovieClick(id: Int) {
@@ -111,4 +134,9 @@ class PersonFragment : Fragment(),
         navController.navigate(action)
     }
 
+    override fun onTvShowClick(tvShowId: Int) {
+        val action = PersonFragmentDirections
+            .actionPersonFragmentToTvShowDetailsFragment(tvShowId)
+        navController.navigate(action)
+    }
 }

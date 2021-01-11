@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragments.MovieDetailFragment">
 
@@ -76,11 +76,16 @@
 
     </LinearLayout>
 
-    <TextView
+        <com.borjabravo.readmoretextview.ReadMoreTextView
         android:layout_marginTop="20dp"
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:trimCollapsedText="@string/read_more"
+        app:trimExpandedText="@string/read_less"
+        app:trimMode="trimModeLength"
+        app:trimLength="300"
+        app:colorClickableText="@color/red"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:textSize="16sp"

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviedatabase.api.RootTVShowsResponse
+import com.example.moviedatabase.api.RootTvShowCreditsResponse
 import com.example.moviedatabase.api.TheMovieDbApi
 import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
@@ -129,5 +130,29 @@ class TvShowsRepository @Inject constructor(private val theMovieDbAPI: TheMovieD
         })
 
         return tvShowListLiveData
+    }
+
+    /**
+     * Gets the TV shows for which a person is credited.
+     * @param personId the id of the credited person.
+     */
+    fun getPersonTvShowCredits(personId: Int) : MutableLiveData<ArrayList<TvShow>> {
+        val tvShowsLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
+        val tvShowsCall : Call<RootTvShowCreditsResponse> = theMovieDbAPI.getPersonTVShowCredits(personId)
+        tvShowsCall.enqueue(object : Callback<RootTvShowCreditsResponse> {
+
+            override fun onFailure(call: Call<RootTvShowCreditsResponse>, t: Throwable) {
+                Log.e(TAG, "Failed getting the cast", t)
+            }
+            override fun onResponse(call: Call<RootTvShowCreditsResponse>, response: Response<RootTvShowCreditsResponse>){
+
+                val rootResponse : RootTvShowCreditsResponse? = response.body()
+                val tvShows : ArrayList<TvShow>? = (rootResponse?.cast ?: mutableListOf()) as ArrayList<TvShow>?
+
+                tvShowsLiveData.value = tvShows
+            }
+        })
+
+        return tvShowsLiveData
     }
 }

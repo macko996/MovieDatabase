@@ -41,7 +41,7 @@ interface TheMovieDbApi {
     fun getTvShowRecommendations(@Path ("tv_id") tvShowId : Int) : Call<RootTVShowsResponse>
 
     @GET("person/{person_id}/tv_credits")
-    fun getPersonTVShowCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>
+    fun getPersonTVShowCredits(@Path("person_id")personId: Int) : Call<RootTvShowCreditsResponse>
 
     @GET("search/tv")
     fun searchTvShows(@Query ("query") query: String) : Call<RootTVShowsResponse>
