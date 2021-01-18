@@ -16,3 +16,7 @@ interface CastService {
     @GET("movie/{movie_id}/credits")
     fun getMovieCredits(@Path("movie_id") movieId: Int): Call<RootCastResponse>
 }
+
+class RootCastResponse {
+    lateinit var cast: List<Cast>
+}

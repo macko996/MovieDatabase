@@ -3,6 +3,7 @@ package com.example.moviedatabase.api
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.model.TvShow
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -24,4 +25,13 @@ interface MovieService {
 
     @GET("person/{person_id}/movie_credits")
     fun getPersonMovieCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>
+}
+
+class ResultsResponse {
+    @SerializedName("results")
+    lateinit var movies: List<Movie>
+}
+
+class RootCreditsResponse {
+    lateinit var cast: List<Movie>
 }

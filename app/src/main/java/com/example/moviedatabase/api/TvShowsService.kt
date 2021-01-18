@@ -1,6 +1,7 @@
 package com.example.moviedatabase.api
 
 import com.example.moviedatabase.model.TvShow
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -22,4 +23,13 @@ interface TvShowsService {
 
     @GET("search/tv")
     fun searchTvShows(@Query("query") query: String) : Call<RootTVShowsResponse>
+}
+
+class RootTVShowsResponse {
+    @SerializedName("results")
+    lateinit var tvShows: List<TvShow>
+}
+
+class RootTvShowCreditsResponse {
+    lateinit var cast: List<TvShow>
 }
