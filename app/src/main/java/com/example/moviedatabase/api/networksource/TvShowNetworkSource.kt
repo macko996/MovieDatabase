@@ -1,9 +1,9 @@
-package com.example.moviedatabase.api
+package com.example.moviedatabase.api.networksource
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.networkEntities.TvShowNetworkEntity
+import com.example.moviedatabase.api.model.TvShowNetworkEntity
 import com.example.moviedatabase.api.services.RootTVShowsResponse
 import com.example.moviedatabase.api.services.RootTvShowCreditsResponse
 import com.example.moviedatabase.api.services.TvShowsService

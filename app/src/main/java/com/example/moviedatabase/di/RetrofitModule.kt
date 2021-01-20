@@ -1,7 +1,7 @@
 package com.example.moviedatabase.di
 
 import com.example.moviedatabase.api.MovieInterceptor
-import com.example.moviedatabase.api.services.CastService
+import com.example.moviedatabase.api.services.ActorService
 import com.example.moviedatabase.api.services.MovieService
 import com.example.moviedatabase.api.services.TvShowsService
 import dagger.Module
@@ -70,8 +70,8 @@ object RetrofitModule {
      */
     @Singleton
     @Provides
-    fun provideCastService(retrofit: Retrofit) : CastService {
+    fun provideCastService(retrofit: Retrofit) : ActorService {
 
-        return retrofit.create(CastService::class.java)
+        return retrofit.create(ActorService::class.java)
     }
 }

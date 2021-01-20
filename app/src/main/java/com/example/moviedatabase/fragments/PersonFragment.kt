@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.R
 import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
-import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Actor
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.model.TvShow
-import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.ActorRepository
 import com.example.moviedatabase.repository.MovieRepository
 import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
@@ -37,10 +37,8 @@ import javax.inject.Inject
 class PersonFragment : Fragment(),
     MovieAdapter.MOnItemClickListener , TvShowsAdapter.OnTvShowClickListener{
 
-    private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
-
     var personId : Int = 0
-    lateinit var personLiveData: LiveData<Cast>
+    lateinit var personLiveData: LiveData<Actor>
     lateinit var personMovieCredits: LiveData<List<Movie>>
     lateinit var personTVShowsCredits: LiveData<List<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
@@ -52,7 +50,7 @@ class PersonFragment : Fragment(),
     @Inject
     lateinit var movieRepository: MovieRepository
     @Inject
-    lateinit var castRepository: CastRepository
+    lateinit var actorRepository: ActorRepository
     @Inject
     lateinit var tvShowRepository: TvShowsRepository
 
@@ -88,13 +86,11 @@ class PersonFragment : Fragment(),
         personId = args.personId
 
         //get details about the person
-        personLiveData = castRepository.getPersonDetails(personId)
+        personLiveData = actorRepository.getPersonDetails(personId)
         personLiveData.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { person ->
-                val photoUrl = PHOTO_BASE_URL + person.profilePath
-                Picasso.get().load(photoUrl).resize(0, 1280).into(photo)
-
+                Picasso.get().load(person.profilePhotoUrl).resize(0, 1280).into(photo)
                 name.text = person.name
                 birthday.text = person.birthday
                 biography.text = person.biography

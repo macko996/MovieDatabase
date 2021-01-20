@@ -1,4 +1,4 @@
-package com.example.moviedatabase.api.networkEntities
+package com.example.moviedatabase.api.model
 
 import com.google.gson.annotations.SerializedName
 

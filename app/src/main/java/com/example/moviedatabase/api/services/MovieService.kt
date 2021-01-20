@@ -1,6 +1,6 @@
 package com.example.moviedatabase.api.services
 
-import com.example.moviedatabase.api.networkEntities.MovieNetworkEntity
+import com.example.moviedatabase.api.model.MovieNetworkEntity
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET

@@ -1,7 +1,7 @@
 package com.example.moviedatabase.api.networkmapper
 
-import com.example.moviedatabase.api.networkEntities.Genres
-import com.example.moviedatabase.api.networkEntities.MovieNetworkEntity
+import com.example.moviedatabase.api.model.Genres
+import com.example.moviedatabase.api.model.MovieNetworkEntity
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.util.EntityMapper
 import javax.inject.Inject

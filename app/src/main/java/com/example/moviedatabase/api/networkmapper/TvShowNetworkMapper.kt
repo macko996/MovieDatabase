@@ -1,7 +1,7 @@
 package com.example.moviedatabase.api.networkmapper
 
-import com.example.moviedatabase.api.networkEntities.Genres
-import com.example.moviedatabase.api.networkEntities.TvShowNetworkEntity
+import com.example.moviedatabase.api.model.Genres
+import com.example.moviedatabase.api.model.TvShowNetworkEntity
 import com.example.moviedatabase.model.TvShow
 import com.example.moviedatabase.util.EntityMapper
 import javax.inject.Inject
@@ -34,7 +34,6 @@ class TvShowNetworkMapper @Inject constructor() : EntityMapper<TvShowNetworkEnti
             lastEpisodeToAir = entity.lastEpisodeToAir,
             nextEpisodeToAir = entity.nextEpisodeToAir,
             episodeRuntime = runtime,
-//            episodeRuntime = entity.episodeRuntime.get(0),
             averageScore = entity.averageScore,
             numberOfEpisodes = entity.numberOfEpisodes,
             numberOfSeasons = entity.numberOfSeasons,
@@ -49,7 +48,7 @@ class TvShowNetworkMapper @Inject constructor() : EntityMapper<TvShowNetworkEnti
         val backdropPath = domainModel.backdropUrl.removePrefix(BACKDROP_BASE_URL)
         val genres : ArrayList<Genres> = ArrayList()
         domainModel.genres.forEach { genre ->  genres.add(Genres(name = genre))}
-//        val episodeRuntimeList = domainModel.episodeRuntime as ArrayList<Int>
+
         val list : ArrayList<Int> = ArrayList()
         list.add(domainModel.episodeRuntime)
         val episodeRuntimeList: List<Int> = list

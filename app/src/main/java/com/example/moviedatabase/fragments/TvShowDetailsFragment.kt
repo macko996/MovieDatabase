@@ -13,11 +13,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.R
-import com.example.moviedatabase.adapters.CastAdapter
+import com.example.moviedatabase.adapters.ActorAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
-import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Actor
 import com.example.moviedatabase.model.TvShow
-import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.ActorRepository
 import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,22 +29,22 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class TvShowDetailsFragment : Fragment(),
-    TvShowsAdapter.OnTvShowClickListener, CastAdapter.OnPersonClickListener {
+    TvShowsAdapter.OnTvShowClickListener, ActorAdapter.OnPersonClickListener {
 
     lateinit var tvShowLiveData: LiveData<TvShow>
     lateinit var recommendedTvShowsLiveData : LiveData<List<TvShow>>
-    lateinit var castLiveData: LiveData<ArrayList<Cast>>
+    lateinit var castLiveData: LiveData<List<Actor>>
     private val args: TvShowDetailsFragmentArgs by navArgs()
     private lateinit var navController: NavController
 
     private lateinit var recommendedTvShowsRecyclerView: RecyclerView
     private lateinit var recommendedTvShowsAdapter: TvShowsAdapter
     private lateinit var castRecyclerView: RecyclerView
-    private lateinit var castAdapter : CastAdapter
+    private lateinit var actorAdapter : ActorAdapter
     @Inject
     lateinit var tvShowsRepository: TvShowsRepository
     @Inject
-    lateinit var castRepository: CastRepository
+    lateinit var actorRepository: ActorRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,12 +95,12 @@ class TvShowDetailsFragment : Fragment(),
             })
 
         //get cast
-        castLiveData = castRepository.getTvShowCredits(tvId)
+        castLiveData = actorRepository.getTvShowCredits(tvId)
         castLiveData.observe(
             viewLifecycleOwner,
             Observer { cast ->
-                castAdapter = CastAdapter(cast, this)
-                castRecyclerView.setAdapter(castAdapter)
+                actorAdapter = ActorAdapter(cast, this)
+                castRecyclerView.setAdapter(actorAdapter)
             })
 
         //get recommended TV shows

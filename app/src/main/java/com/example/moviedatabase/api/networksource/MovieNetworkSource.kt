@@ -1,9 +1,9 @@
-package com.example.moviedatabase.api
+package com.example.moviedatabase.api.networksource
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.networkEntities.MovieNetworkEntity
+import com.example.moviedatabase.api.model.MovieNetworkEntity
 import com.example.moviedatabase.api.services.MovieService
 import com.example.moviedatabase.api.services.ResultsResponse
 import com.example.moviedatabase.api.services.RootCreditsResponse
@@ -13,7 +13,7 @@ import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TAG = "RemoteMovieSource"
+private const val TAG = "MovieNetworkSource"
 
 /**
  * This class is used for executing the Call objects from MovieService

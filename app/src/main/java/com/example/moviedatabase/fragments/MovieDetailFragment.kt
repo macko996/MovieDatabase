@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -15,11 +14,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.R
-import com.example.moviedatabase.adapters.CastAdapter
+import com.example.moviedatabase.adapters.ActorAdapter
 import com.example.moviedatabase.adapters.MovieAdapter
-import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Actor
 import com.example.moviedatabase.model.Movie
-import com.example.moviedatabase.repository.CastRepository
+import com.example.moviedatabase.repository.ActorRepository
 import com.example.moviedatabase.repository.MovieRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,22 +34,22 @@ private const val TAG = "MovieDetailsFragment"
  */
 @AndroidEntryPoint
 class MovieDetailFragment() : Fragment(),
-    MovieAdapter.MOnItemClickListener, CastAdapter.OnPersonClickListener{
+    MovieAdapter.MOnItemClickListener, ActorAdapter.OnPersonClickListener{
 
     lateinit var movieLiveData: LiveData<Movie>
     lateinit var recommendedMoviesLiveData : LiveData<List<Movie>>
-    lateinit var castLiveData: MutableLiveData<ArrayList<Cast>>
+    lateinit var castLiveData: LiveData<List<Actor>>
     private val args: MovieDetailFragmentArgs by navArgs()
     private lateinit var navController: NavController
 
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var castRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
-    private lateinit var castAdapter : CastAdapter
+    private lateinit var actorAdapter : ActorAdapter
     @Inject
     lateinit var movieRepository: MovieRepository
     @Inject
-    lateinit var castRepository: CastRepository
+    lateinit var actorRepository: ActorRepository
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,13 +113,12 @@ class MovieDetailFragment() : Fragment(),
             })
 
         //get cast
-        castLiveData = castRepository.getMovieCredits(movieId)
+        castLiveData = actorRepository.getMovieCredits(movieId)
         castLiveData.observe(
             viewLifecycleOwner,
-            Observer {cast ->
-                Log.d(TAG, "Received cast: $cast")
-                castAdapter = CastAdapter(cast,this)
-                castRecyclerView.adapter = castAdapter
+            Observer {actors ->
+                actorAdapter = ActorAdapter(actors,this)
+                castRecyclerView.adapter = actorAdapter
         })
     }
 

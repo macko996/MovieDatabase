@@ -2,8 +2,8 @@ package com.example.moviedatabase.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.moviedatabase.api.TvShowNetworkSource
 import com.example.moviedatabase.api.networkmapper.TvShowNetworkMapper
+import com.example.moviedatabase.api.networksource.TvShowNetworkSource
 import com.example.moviedatabase.model.TvShow
 import javax.inject.Inject
 import javax.inject.Singleton
