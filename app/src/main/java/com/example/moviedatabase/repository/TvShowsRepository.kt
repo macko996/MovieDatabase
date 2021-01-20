@@ -27,11 +27,8 @@ class TvShowsRepository @Inject constructor(
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
             .getPopularTvShows()
 
-        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations.map(tvShowsNetworkEntitiesLiveData)
-        { tvShowsEntities->
-            val tvShows = mapper.mapFromEntityList(tvShowsEntities)
-            return@map tvShows
-        }
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
         return tvShowsLiveData
     }
@@ -45,11 +42,8 @@ class TvShowsRepository @Inject constructor(
         val tvShowNetworkLiveData = tvShowNetworkSource
             .getTvShowDetails(tvId)
 
-        val tvShowLiveData : LiveData<TvShow> = Transformations.map(tvShowNetworkLiveData)
-        { tvShowNetworkEntity->
-            val tvShow = mapper.mapFromEntity(tvShowNetworkEntity)
-            return@map tvShow
-        }
+        val tvShowLiveData : LiveData<TvShow> = Transformations
+            .map(tvShowNetworkLiveData,{mapper.mapFromEntity(it)})
 
         return tvShowLiveData
     }
@@ -64,11 +58,8 @@ class TvShowsRepository @Inject constructor(
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
             .getTvShowRecommendations(tvId)
 
-        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations.map(tvShowsNetworkEntitiesLiveData)
-        { tvShowsEntities->
-            val tvShows = mapper.mapFromEntityList(tvShowsEntities)
-            return@map tvShows
-        }
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
         return tvShowsLiveData
     }
@@ -83,11 +74,8 @@ class TvShowsRepository @Inject constructor(
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
             .searchTvShow(query)
 
-        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations.map(tvShowsNetworkEntitiesLiveData)
-        { tvShowsEntities->
-            val tvShows = mapper.mapFromEntityList(tvShowsEntities)
-            return@map tvShows
-        }
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData, {mapper.mapFromEntityList(it)})
 
         return tvShowsLiveData
     }
@@ -101,11 +89,8 @@ class TvShowsRepository @Inject constructor(
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
             .getPersonTvShowCredits(personId)
 
-        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations.map(tvShowsNetworkEntitiesLiveData)
-        { tvShowsEntities->
-            val tvShows = mapper.mapFromEntityList(tvShowsEntities)
-            return@map tvShows
-        }
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
         return tvShowsLiveData
     }

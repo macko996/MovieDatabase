@@ -30,11 +30,8 @@ class ActorRepository @Inject constructor(
 
         val castLiveData = networkSource.getMovieCredits(movieId)
 
-        val actorsLiveData : LiveData<List<Actor>> = Transformations.map(castLiveData)
-        { castEntities ->
-            val actors = mapper.mapFromEntityList(castEntities)
-            return@map actors
-        }
+        val actorsLiveData : LiveData<List<Actor>> = Transformations
+            .map(castLiveData, { mapper.mapFromEntityList(it)})
 
         return actorsLiveData
     }
@@ -46,11 +43,8 @@ class ActorRepository @Inject constructor(
     fun getPersonDetails(personId: Int) : LiveData<Actor> {
 
         val personLiveData : LiveData<ActorNetworkEntity> = networkSource.getPersonDetails(personId)
-        val actorLiveData : LiveData<Actor> = Transformations.map(personLiveData)
-        { person ->
-            return@map mapper.mapFromEntity(person)
-
-        }
+        val actorLiveData : LiveData<Actor> = Transformations
+            .map(personLiveData, {mapper.mapFromEntity(it)})
 
         return actorLiveData
     }
@@ -61,11 +55,11 @@ class ActorRepository @Inject constructor(
      */
     fun getTvShowCredits(tvShowId: Int) : LiveData<List<Actor>> {
 
-        val actorNetworkEntityLiveData : LiveData<List<ActorNetworkEntity>> = networkSource.getTvShowCredits(tvShowId)
-        val actorsLiveData: LiveData<List<Actor>> = Transformations.map(actorNetworkEntityLiveData)
-        { cast ->
-            mapper.mapFromEntityList(cast)
-        }
+        val actorNetworkEntityLiveData : LiveData<List<ActorNetworkEntity>> = networkSource
+            .getTvShowCredits(tvShowId)
+
+        val actorsLiveData: LiveData<List<Actor>> = Transformations
+            .map(actorNetworkEntityLiveData,{mapper.mapFromEntityList(it)})
 
         return actorsLiveData
     }

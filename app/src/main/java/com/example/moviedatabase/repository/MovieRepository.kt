@@ -15,23 +15,19 @@ private const val TAG = "MovieRepository"
  */
 @Singleton
 class MovieRepository @Inject constructor(
-    private val movieNetworkMapper: MovieNetworkMapper,
-    private val movieNetworkSource: MovieNetworkSource
+    private val networkMapper: MovieNetworkMapper,
+    private val networkSource: MovieNetworkSource
 ) {
 
     /**
      * Gets popular movies
      */
     fun getPopularMovies(): LiveData<List<Movie>> {
-        val moviesNetworkEntitiesLiveData = movieNetworkSource
+        val moviesNetworkEntitiesLiveData = networkSource
             .getPopularMovies()
 
-        val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)
-        { movieEntities->
-            val movies = movieNetworkMapper.mapFromEntityList(movieEntities)
-            return@map movies
-        }
-
+        val moviesLiveData : LiveData<List<Movie>> = Transformations
+            .map(moviesNetworkEntitiesLiveData,{networkMapper.mapFromEntityList(it)})
         return moviesLiveData
     }
 
@@ -41,14 +37,11 @@ class MovieRepository @Inject constructor(
      */
     fun getMovieDetails(id:Int): LiveData<Movie> {
 
-        val movieNetworkEntityLiveData = movieNetworkSource
+        val movieNetworkEntityLiveData = networkSource
             .getMovieDetails(id)
 
-        val moviesLiveData : LiveData<Movie> = Transformations.map(movieNetworkEntityLiveData)
-        { movieEntitity->
-            val movie = movieNetworkMapper.mapFromEntity(movieEntitity)
-            return@map movie
-        }
+        val moviesLiveData : LiveData<Movie> = Transformations
+            .map(movieNetworkEntityLiveData, {networkMapper.mapFromEntity(it)})
 
         return moviesLiveData
     }
@@ -59,14 +52,10 @@ class MovieRepository @Inject constructor(
      */
     fun getMovieRecommendations(movieId: Int): LiveData<List<Movie>> {
 
-
-        val moviesNetworkEntitiesLiveData = movieNetworkSource
+        val moviesNetworkEntitiesLiveData = networkSource
             .getMovieRecommendations(movieId)
-        val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)
-        { movieEntities->
-            val movies = movieNetworkMapper.mapFromEntityList(movieEntities)
-            return@map movies
-        }
+        val moviesLiveData : LiveData<List<Movie>> = Transformations
+            .map(moviesNetworkEntitiesLiveData, {networkMapper.mapFromEntityList(it)})
 
         return moviesLiveData
     }
@@ -77,15 +66,11 @@ class MovieRepository @Inject constructor(
      */
     fun searchMovie(query: String): LiveData<List<Movie>> {
 
-        val moviesNetworkEntitiesLiveData = movieNetworkSource
+        val moviesNetworkEntitiesLiveData = networkSource
             .searchMovie(query)
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations
-            .map(moviesNetworkEntitiesLiveData)
-            { movieEntities->
-                val movies = movieNetworkMapper.mapFromEntityList(movieEntities)
-                return@map movies
-            }
+            .map(moviesNetworkEntitiesLiveData, {networkMapper.mapFromEntityList(it)})
 
         return moviesLiveData
     }
@@ -96,14 +81,11 @@ class MovieRepository @Inject constructor(
      */
     fun getPersonMovieCredits(personId: Int) : LiveData<List<Movie>> {
 
-        val moviesNetworkEntitiesLiveData = movieNetworkSource
+        val moviesNetworkEntitiesLiveData = networkSource
             .getPersonMovieCredits(personId)
 
-        val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)
-        { movieEntities->
-            val movies = movieNetworkMapper.mapFromEntityList(movieEntities)
-            return@map movies
-        }
+        val moviesLiveData : LiveData<List<Movie>> = Transformations
+            .map(moviesNetworkEntitiesLiveData, {networkMapper.mapFromEntityList(it)})
 
         return moviesLiveData
     }
