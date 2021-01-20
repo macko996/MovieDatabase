@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -41,9 +40,9 @@ class PersonFragment : Fragment(),
     private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
 
     var personId : Int = 0
-    lateinit var personLiveData: MutableLiveData<Cast>
+    lateinit var personLiveData: LiveData<Cast>
     lateinit var personMovieCredits: LiveData<List<Movie>>
-    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<TvShow>>
+    lateinit var personTVShowsCredits: LiveData<List<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var tvShowsRecyclerView: RecyclerView
@@ -123,7 +122,6 @@ class PersonFragment : Fragment(),
                 number_of_tv_shows.text = getString(R.string.number_of_tv_shows, tvShows.size)
                 tvShowsAdapter = TvShowsAdapter(tvShows, this)
                 tvShowsRecyclerView.adapter = tvShowsAdapter
-
             }
         )
 

@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.*
+import com.example.moviedatabase.R
 import com.example.moviedatabase.adapters.CastAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
@@ -30,11 +30,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TvShowDetailsFragment : Fragment(),
     TvShowsAdapter.OnTvShowClickListener, CastAdapter.OnPersonClickListener {
-    private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
 
-    lateinit var tvShowLiveData: MutableLiveData<TvShow>
-    lateinit var recommendedTvShowsLiveData : MutableLiveData<ArrayList<TvShow>>
-    lateinit var castLiveData: MutableLiveData<ArrayList<Cast>>
+    lateinit var tvShowLiveData: LiveData<TvShow>
+    lateinit var recommendedTvShowsLiveData : LiveData<List<TvShow>>
+    lateinit var castLiveData: LiveData<ArrayList<Cast>>
     private val args: TvShowDetailsFragmentArgs by navArgs()
     private lateinit var navController: NavController
 
@@ -81,16 +80,15 @@ class TvShowDetailsFragment : Fragment(),
         tvShowLiveData.observe(
             viewLifecycleOwner,
             Observer { tvShow ->
-                val backdropUrl = BACKDROP_BASE_URL + tvShow.backdropPath
-                Picasso.get().load(backdropUrl).into(backdrop)
+                Picasso.get().load(tvShow.backdropUrl).into(backdrop)
                 name.text = tvShow.name
                 first_air_date.text = tvShow.firstAirDate
-                val runtimeString = getString(R.string.runtime, tvShow.episodeRuntime.get(0))
+                val runtimeString = getString(R.string.runtime, tvShow.episodeRuntime)
                 runtime.text = runtimeString
                 rating.text = tvShow.averageScore.toString()
                 description.text = tvShow.description
                 tvShow.genres.forEach { genre ->
-                    genres.append(genre.name + " | ")
+                    genres.append(genre + " | ")
                 }
                 number_of_seasons.text = getString(R.string.number_of_seasons,tvShow.numberOfSeasons)
                 number_of_episodes.text = getString(R.string.number_of_episodes,tvShow.numberOfEpisodes)

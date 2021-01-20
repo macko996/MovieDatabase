@@ -54,8 +54,8 @@ class MovieNetworkMapper @Inject constructor() : EntityMapper<MovieNetworkEntity
         )
     }
 
-    fun mapFromEntityList(entitites: List<MovieNetworkEntity>) : ArrayList<Movie> {
+    override fun mapFromEntityList(entitites: List<MovieNetworkEntity>) : List<Movie> {
         val mappedMovies = entitites.map { mapFromEntity(it) }
-        return mappedMovies as ArrayList<Movie>
+        return mappedMovies
     }
 }

@@ -2,7 +2,7 @@ package com.example.moviedatabase.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.moviedatabase.api.RemoteMovieSource
+import com.example.moviedatabase.api.MovieNetworkSource
 import com.example.moviedatabase.api.networkmapper.MovieNetworkMapper
 import com.example.moviedatabase.model.Movie
 import javax.inject.Inject
@@ -16,14 +16,14 @@ private const val TAG = "MovieRepository"
 @Singleton
 class MovieRepository @Inject constructor(
     private val movieNetworkMapper: MovieNetworkMapper,
-    private val remoteMovieSource: RemoteMovieSource
+    private val movieNetworkSource: MovieNetworkSource
 ) {
 
     /**
      * Gets popular movies
      */
     fun getPopularMovies(): LiveData<List<Movie>> {
-        val moviesNetworkEntitiesLiveData = remoteMovieSource
+        val moviesNetworkEntitiesLiveData = movieNetworkSource
             .getPopularMovies()
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)
@@ -41,7 +41,7 @@ class MovieRepository @Inject constructor(
      */
     fun getMovieDetails(id:Int): LiveData<Movie> {
 
-        val movieNetworkEntityLiveData = remoteMovieSource
+        val movieNetworkEntityLiveData = movieNetworkSource
             .getMovieDetails(id)
 
         val moviesLiveData : LiveData<Movie> = Transformations.map(movieNetworkEntityLiveData)
@@ -60,7 +60,7 @@ class MovieRepository @Inject constructor(
     fun getMovieRecommendations(movieId: Int): LiveData<List<Movie>> {
 
 
-        val moviesNetworkEntitiesLiveData = remoteMovieSource
+        val moviesNetworkEntitiesLiveData = movieNetworkSource
             .getMovieRecommendations(movieId)
         val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)
         { movieEntities->
@@ -77,7 +77,7 @@ class MovieRepository @Inject constructor(
      */
     fun searchMovie(query: String): LiveData<List<Movie>> {
 
-        val moviesNetworkEntitiesLiveData = remoteMovieSource
+        val moviesNetworkEntitiesLiveData = movieNetworkSource
             .searchMovie(query)
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations
@@ -96,7 +96,7 @@ class MovieRepository @Inject constructor(
      */
     fun getPersonMovieCredits(personId: Int) : LiveData<List<Movie>> {
 
-        val moviesNetworkEntitiesLiveData = remoteMovieSource
+        val moviesNetworkEntitiesLiveData = movieNetworkSource
             .getPersonMovieCredits(personId)
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations.map(moviesNetworkEntitiesLiveData)

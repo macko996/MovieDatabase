@@ -32,8 +32,8 @@ class TvShowListFragment : Fragment(),
     private lateinit var tvShowsAdapter: TvShowsAdapter
     @Inject
     lateinit var tvShowsRepository: TvShowsRepository
-    private var tvShowsList : ArrayList<TvShow> = ArrayList<TvShow>()
-    private lateinit var tvShowsLiveData : LiveData<ArrayList<TvShow>>
+    private var tvShowsList : ArrayList<TvShow> = ArrayList()
+    private lateinit var tvShowsLiveData : LiveData<List<TvShow>>
     private lateinit var navController: NavController
     private val args: TvShowListFragmentArgs by navArgs()
 
@@ -53,8 +53,7 @@ class TvShowListFragment : Fragment(),
         val view = inflater.inflate(R.layout.fragment_tv_show_list, container, false)
         tvShowsRecyclerView = view.findViewById(R.id.tv_shows_recycler_view)
         tvShowsRecyclerView.layoutManager = GridLayoutManager(context,2)
-        tvShowsAdapter =
-            TvShowsAdapter(tvShowsList, this)
+        tvShowsAdapter = TvShowsAdapter(tvShowsList, this)
         tvShowsRecyclerView.setAdapter(tvShowsAdapter)
         return view
     }
