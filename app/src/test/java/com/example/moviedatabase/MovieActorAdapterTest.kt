@@ -2,14 +2,14 @@ package com.example.moviedatabase
 
 import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Movie
+import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.junit.Assert.assertThat
-import org.hamcrest.core.Is.`is`
 
 
-class MovieAdapterTest {
+class MovieActorAdapterTest {
 
     private var adapter: MovieAdapter? = null
 

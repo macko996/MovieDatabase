@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviedatabase.R
-import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Actor
 import com.squareup.picasso.Picasso
 
-class CastAdapter (private val cast: List<Cast>, private val listener: OnPersonClickListener)
-    : RecyclerView.Adapter<CastAdapter.CastHolder>() {
+class ActorAdapter (private val actors: List<Actor>, private val listener: OnPersonClickListener)
+    : RecyclerView.Adapter<ActorAdapter.CastHolder>() {
     
         private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
@@ -28,17 +28,16 @@ class CastAdapter (private val cast: List<Cast>, private val listener: OnPersonC
             return CastHolder(itemView)
         }
 
-        override fun getItemCount(): Int = cast.size
+        override fun getItemCount(): Int = actors.size
 
         override fun onBindViewHolder(holder: CastHolder, position: Int) {
 
-            val castItem = cast[position]
+            val actor = actors[position]
 
-            val photoUrl = POSTER_BASE_URL + castItem.profilePath
-            Picasso.get().load(photoUrl).into(holder.photo)
+            Picasso.get().load(actor.profilePhotoUrl).into(holder.photo)
 
-            holder.name.text = castItem.name
-            holder.character.text = castItem.character
+            holder.name.text = actor.name
+            holder.character.text = actor.character
 
         }
 
@@ -48,7 +47,7 @@ class CastAdapter (private val cast: List<Cast>, private val listener: OnPersonC
         init {
             itemView.setOnClickListener{
                 val position = adapterPosition
-                val id = cast[position].id
+                val id = actors[position].id
                 listener.onPersonClick(id)
             }
         }

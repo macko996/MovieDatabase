@@ -12,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.R
+import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Movie
-import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.MovieRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -27,13 +27,13 @@ private const val TAG = "MoviesListFragment"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
+class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
     @Inject
-    lateinit var movieFetcher : MovieFetcher
-    private var movieList : ArrayList<Movie> = ArrayList<Movie>()
-    private lateinit var moviesLiveData : LiveData<ArrayList<Movie>>
+    lateinit var movieRepository : MovieRepository
+    private var movieList : ArrayList<Movie> = ArrayList()
+    private lateinit var moviesLiveData : LiveData<List<Movie>>
     private lateinit var navController: NavController
     private val args: MoviesListFragmentArgs by navArgs()
 
@@ -41,11 +41,6 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         navController = findNavController()
-
-    }
-
-    override fun onStart() {
-        super.onStart()
 
     }
 
@@ -59,7 +54,7 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
         movieRecyclerView = view.findViewById(R.id.movies_recycler_view)
         movieRecyclerView.layoutManager = GridLayoutManager(context,2)
         movieAdapter = MovieAdapter(movieList, this)
-        movieRecyclerView.setAdapter(movieAdapter)
+        movieRecyclerView.adapter = movieAdapter
         return view
     }
 
@@ -68,8 +63,8 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
         val query = args.searchQuery
         //get response from web request to https://www.themoviedb.org
         if (query == null) {
-            moviesLiveData = movieFetcher.fetchPopularMovies()
-            moviesLiveData.observe(
+
+            movieRepository.getPopularMovies().observe(
                 viewLifecycleOwner,
                 Observer { movieItems ->
                     movieList.clear()
@@ -77,7 +72,7 @@ class MoviesListFragment() : Fragment(), MovieAdapter.MOnItemClickListener {
                     movieAdapter.notifyDataSetChanged()
                 })
         } else{
-            moviesLiveData = movieFetcher.searchMovie(query)
+            moviesLiveData = movieRepository.searchMovie(query)
             moviesLiveData.observe(
                 viewLifecycleOwner,
                 Observer {movieItems ->

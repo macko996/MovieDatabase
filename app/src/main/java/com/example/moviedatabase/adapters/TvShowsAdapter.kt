@@ -14,8 +14,6 @@ import com.squareup.picasso.Picasso
 class TvShowsAdapter(private val tvShows: List<TvShow>, private val listener: OnTvShowClickListener)
     : RecyclerView.Adapter<TvShowsAdapter.TvShowHolder>() {
 
-    private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowHolder {
 
         val itemView = LayoutInflater.from(parent.context)
@@ -36,8 +34,7 @@ class TvShowsAdapter(private val tvShows: List<TvShow>, private val listener: On
 
         val tvShow = tvShows[position]
 
-        val posterUrl = POSTER_BASE_URL + tvShow.posterPath
-        Picasso.get().load(posterUrl).into(holder.poster)
+        Picasso.get().load(tvShow.posterUrl).into(holder.poster)
 
         holder.name.text = tvShow.name
         holder.firstAirDate.text = tvShow.firstAirDate

@@ -1,16 +1,10 @@
 package com.example.moviedatabase.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.RootTVShowsResponse
-import com.example.moviedatabase.api.RootTvShowCreditsResponse
-import com.example.moviedatabase.api.MovieService
-import com.example.moviedatabase.api.TvShowsService
+import androidx.lifecycle.Transformations
+import com.example.moviedatabase.api.networkmapper.TvShowNetworkMapper
+import com.example.moviedatabase.api.networksource.TvShowNetworkSource
 import com.example.moviedatabase.model.TvShow
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,64 +12,38 @@ private const val TAG = "TvShowsRepository"
 
 /**
  * This class is used for retrieving data about TV Shows.
- * @see MovieService
  */
 @Singleton
 class TvShowsRepository @Inject constructor(
-    private val movieService: MovieService
-    ,private val tvShowsService: TvShowsService) {
+    private val tvShowNetworkSource: TvShowNetworkSource,
+    private val mapper: TvShowNetworkMapper
+) {
 
     /**
      * Gets popular TV shows.
      */
-    fun getPopularTvShows(): LiveData<ArrayList<TvShow>> {
+    fun getPopularTvShows(): LiveData<List<TvShow>> {
 
-        val responseLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowCall: Call<RootTVShowsResponse> = tvShowsService.getPopularTvShows()
-        tvShowCall.enqueue(object : Callback<RootTVShowsResponse> {
+        val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
+            .getPopularTvShows()
 
-            override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch movies", t)
-            }
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
-            override fun onResponse(
-                call: Call<RootTVShowsResponse>,
-                response: Response<RootTVShowsResponse>){
-
-                Log.d(TAG, "onResponse: ${response.body()}")
-                val resultsResponse : RootTVShowsResponse? = response.body()
-                val tvShows : ArrayList<TvShow>? =
-                    (resultsResponse?.tvShows ?: mutableListOf()) as ArrayList<TvShow>?
-
-                responseLiveData.value = tvShows
-            }
-        })
-
-        return responseLiveData
+        return tvShowsLiveData
     }
 
     /**
      * Gets details about a particular TV Show.
      * @param tvId The id of the Tv Show
      */
-    fun getTvShowDetails(tvId: Int): MutableLiveData<TvShow> {
+    fun getTvShowDetails(tvId: Int): LiveData<TvShow> {
 
-        val tvShowLiveData: MutableLiveData<TvShow> = MutableLiveData()
-        val tvShowDetailsCall: Call<TvShow> = tvShowsService.getTvShowDetails(tvId)
+        val tvShowNetworkLiveData = tvShowNetworkSource
+            .getTvShowDetails(tvId)
 
-        tvShowDetailsCall.enqueue(object : Callback<TvShow> {
-
-            override fun onFailure(call: Call<TvShow>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch details about TV show $tvId", t)
-            }
-
-            override fun onResponse(call: Call<TvShow>, response: Response<TvShow>) {
-
-                Log.d(TAG, "Response received: ${response.body()}")
-                val movie = response.body()
-                tvShowLiveData.value = movie
-            }
-        })
+        val tvShowLiveData : LiveData<TvShow> = Transformations
+            .map(tvShowNetworkLiveData,{mapper.mapFromEntity(it)})
 
         return tvShowLiveData
     }
@@ -85,80 +53,44 @@ class TvShowsRepository @Inject constructor(
      * Gets recommendations based on a particular TV Show.
      * @param tvId The id of the TV Show
      */
-    fun getTvShowRecommendations(tvId: Int): MutableLiveData<ArrayList<TvShow>> {
+    fun getTvShowRecommendations(tvId: Int): LiveData<List<TvShow>> {
 
-        val recommendedTvShowsLiveData: MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowRecommendationsCall: Call<RootTVShowsResponse> = tvShowsService
+        val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
             .getTvShowRecommendations(tvId)
 
-        tvShowRecommendationsCall.enqueue(object : Callback<RootTVShowsResponse> {
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
-            override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch recommendations about TV show $tvId", t)
-            }
-
-            override fun onResponse(call: Call<RootTVShowsResponse>,
-                                    response: Response<RootTVShowsResponse>) {
-
-                val recommendedTvShows = response.body()?.tvShows
-                recommendedTvShowsLiveData.value = recommendedTvShows as ArrayList<TvShow>?
-            }
-        })
-
-        return recommendedTvShowsLiveData
+        return tvShowsLiveData
     }
 
     /**
      * Search for TV Show.
      * @param query the query we search for
      */
-    fun searchTvShow(query: String): LiveData<ArrayList<TvShow>> {
+    fun searchTvShow(query: String): LiveData<List<TvShow>> {
 
-        val tvShowListLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowSearchCall: Call<RootTVShowsResponse> = tvShowsService.searchTvShows(query)
 
-        tvShowSearchCall.enqueue(object : Callback<RootTVShowsResponse> {
+        val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
+            .searchTvShow(query)
 
-            override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
-                Log.e(TAG, "Failed search", t)
-            }
-            override fun onResponse(
-                call: Call<RootTVShowsResponse>,
-                response: Response<RootTVShowsResponse>
-            ){
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData, {mapper.mapFromEntityList(it)})
 
-                val resultsResponse : RootTVShowsResponse? = response.body()
-                val tvShows : ArrayList<TvShow>? = (resultsResponse?.tvShows ?: mutableListOf()) as ArrayList<TvShow>
-
-                tvShowListLiveData.value = tvShows
-            }
-        })
-
-        return tvShowListLiveData
+        return tvShowsLiveData
     }
 
     /**
      * Gets the TV shows for which a person is credited.
      * @param personId the id of the credited person.
      */
-    fun getPersonTvShowCredits(personId: Int) : MutableLiveData<ArrayList<TvShow>> {
-        val tvShowsLiveData : MutableLiveData<ArrayList<TvShow>> = MutableLiveData()
-        val tvShowsCall : Call<RootTvShowCreditsResponse> = tvShowsService
-            .getPersonTVShowCredits(personId)
-        tvShowsCall.enqueue(object : Callback<RootTvShowCreditsResponse> {
+    fun getPersonTvShowCredits(personId: Int) : LiveData<List<TvShow>> {
 
-            override fun onFailure(call: Call<RootTvShowCreditsResponse>, t: Throwable) {
-                Log.e(TAG, "Failed getting the cast", t)
-            }
-            override fun onResponse(call: Call<RootTvShowCreditsResponse>,
-                                    response: Response<RootTvShowCreditsResponse>){
+        val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
+            .getPersonTvShowCredits(personId)
 
-                val rootResponse : RootTvShowCreditsResponse? = response.body()
-                val tvShows : ArrayList<TvShow>? = (rootResponse?.cast ?: mutableListOf()) as ArrayList<TvShow>?
-
-                tvShowsLiveData.value = tvShows
-            }
-        })
+        val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
+            .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
 
         return tvShowsLiveData
     }

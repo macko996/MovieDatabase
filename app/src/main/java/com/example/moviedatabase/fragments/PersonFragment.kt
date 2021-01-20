@@ -5,21 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.R
+import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
-import com.example.moviedatabase.model.Cast
+import com.example.moviedatabase.model.Actor
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.model.TvShow
-import com.example.moviedatabase.repository.CastRepository
-import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.ActorRepository
+import com.example.moviedatabase.repository.MovieRepository
 import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,12 +37,10 @@ import javax.inject.Inject
 class PersonFragment : Fragment(),
     MovieAdapter.MOnItemClickListener , TvShowsAdapter.OnTvShowClickListener{
 
-    private val PHOTO_BASE_URL = "https://image.tmdb.org/t/p/original"
-
     var personId : Int = 0
-    lateinit var personLiveData: MutableLiveData<Cast>
-    lateinit var personMovieCredits: MutableLiveData<ArrayList<Movie>>
-    lateinit var personTVShowsCredits: MutableLiveData<ArrayList<TvShow>>
+    lateinit var personLiveData: LiveData<Actor>
+    lateinit var personMovieCredits: LiveData<List<Movie>>
+    lateinit var personTVShowsCredits: LiveData<List<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var tvShowsRecyclerView: RecyclerView
@@ -50,9 +48,9 @@ class PersonFragment : Fragment(),
     private val args: PersonFragmentArgs by navArgs()
     private lateinit var navController: NavController
     @Inject
-    lateinit var movieFetcher: MovieFetcher
+    lateinit var movieRepository: MovieRepository
     @Inject
-    lateinit var castRepository: CastRepository
+    lateinit var actorRepository: ActorRepository
     @Inject
     lateinit var tvShowRepository: TvShowsRepository
 
@@ -88,13 +86,11 @@ class PersonFragment : Fragment(),
         personId = args.personId
 
         //get details about the person
-        personLiveData = castRepository.getPersonDetails(personId)
+        personLiveData = actorRepository.getPersonDetails(personId)
         personLiveData.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { person ->
-                val photoUrl = PHOTO_BASE_URL + person.profilePath
-                Picasso.get().load(photoUrl).resize(0, 1280).into(photo)
-
+                Picasso.get().load(person.profilePhotoUrl).resize(0, 1280).into(photo)
                 name.text = person.name
                 birthday.text = person.birthday
                 biography.text = person.biography
@@ -105,7 +101,7 @@ class PersonFragment : Fragment(),
             }
         )
 
-        personMovieCredits = movieFetcher.getPersonMovieCredits(personId)
+        personMovieCredits = movieRepository.getPersonMovieCredits(personId)
         personMovieCredits.observe(
             viewLifecycleOwner,
             Observer { movies ->
@@ -122,7 +118,6 @@ class PersonFragment : Fragment(),
                 number_of_tv_shows.text = getString(R.string.number_of_tv_shows, tvShows.size)
                 tvShowsAdapter = TvShowsAdapter(tvShows, this)
                 tvShowsRecyclerView.adapter = tvShowsAdapter
-
             }
         )
 

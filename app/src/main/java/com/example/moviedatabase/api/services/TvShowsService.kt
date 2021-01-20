@@ -1,6 +1,6 @@
-package com.example.moviedatabase.api
+package com.example.moviedatabase.api.services
 
-import com.example.moviedatabase.model.TvShow
+import com.example.moviedatabase.api.model.TvShowNetworkEntity
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
@@ -13,7 +13,7 @@ interface TvShowsService {
     fun getPopularTvShows(): Call<RootTVShowsResponse>
 
     @GET("tv/{tv_id}")
-    fun getTvShowDetails(@Path("tv_id") tvId : Int): Call<TvShow>
+    fun getTvShowDetails(@Path("tv_id") tvId : Int): Call<TvShowNetworkEntity>
 
     @GET("tv/{tv_id}/recommendations")
     fun getTvShowRecommendations(@Path("tv_id") tvShowId : Int) : Call<RootTVShowsResponse>
@@ -27,9 +27,9 @@ interface TvShowsService {
 
 class RootTVShowsResponse {
     @SerializedName("results")
-    lateinit var tvShows: List<TvShow>
+    lateinit var tvShows: List<TvShowNetworkEntity>
 }
 
 class RootTvShowCreditsResponse {
-    lateinit var cast: List<TvShow>
+    lateinit var cast: List<TvShowNetworkEntity>
 }

@@ -1,5 +1,6 @@
 package com.example.moviedatabase.model
 
+import com.example.moviedatabase.api.model.Genres
 import com.google.gson.annotations.SerializedName
 
 data class Seasons (

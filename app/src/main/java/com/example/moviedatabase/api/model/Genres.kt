@@ -1,4 +1,4 @@
-package com.example.moviedatabase.model
+package com.example.moviedatabase.api.model
 
 data class Genres (
     var id: Int = 0,
