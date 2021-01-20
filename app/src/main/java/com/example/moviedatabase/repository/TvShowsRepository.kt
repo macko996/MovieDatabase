@@ -3,10 +3,10 @@ package com.example.moviedatabase.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.RootTVShowsResponse
-import com.example.moviedatabase.api.RootTvShowCreditsResponse
-import com.example.moviedatabase.api.MovieService
-import com.example.moviedatabase.api.TvShowsService
+import com.example.moviedatabase.api.services.MovieService
+import com.example.moviedatabase.api.services.RootTVShowsResponse
+import com.example.moviedatabase.api.services.RootTvShowCreditsResponse
+import com.example.moviedatabase.api.services.TvShowsService
 import com.example.moviedatabase.model.TvShow
 import retrofit2.Call
 import retrofit2.Callback

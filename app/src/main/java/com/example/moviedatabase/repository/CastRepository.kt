@@ -2,9 +2,9 @@ package com.example.moviedatabase.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.moviedatabase.api.CastService
-import com.example.moviedatabase.api.RootCastResponse
-import com.example.moviedatabase.api.MovieService
+import com.example.moviedatabase.api.services.CastService
+import com.example.moviedatabase.api.services.MovieService
+import com.example.moviedatabase.api.services.RootCastResponse
 import com.example.moviedatabase.model.Cast
 import retrofit2.Call
 import retrofit2.Callback

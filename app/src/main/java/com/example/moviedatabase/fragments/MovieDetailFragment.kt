@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -13,13 +14,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.*
+import com.example.moviedatabase.R
 import com.example.moviedatabase.adapters.CastAdapter
 import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.repository.CastRepository
-import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.MovieRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
@@ -36,10 +37,8 @@ private const val TAG = "MovieDetailsFragment"
 class MovieDetailFragment() : Fragment(),
     MovieAdapter.MOnItemClickListener, CastAdapter.OnPersonClickListener{
 
-    private val BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"
-
-    lateinit var movieLiveData: MutableLiveData<Movie>
-    lateinit var recommendedMoviesLiveData : MutableLiveData<ArrayList<Movie>>
+    lateinit var movieLiveData: LiveData<Movie>
+    lateinit var recommendedMoviesLiveData : LiveData<List<Movie>>
     lateinit var castLiveData: MutableLiveData<ArrayList<Cast>>
     private val args: MovieDetailFragmentArgs by navArgs()
     private lateinit var navController: NavController
@@ -49,7 +48,7 @@ class MovieDetailFragment() : Fragment(),
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var castAdapter : CastAdapter
     @Inject
-    lateinit var movieFetcher: MovieFetcher
+    lateinit var movieRepository: MovieRepository
     @Inject
     lateinit var castRepository: CastRepository
 
@@ -83,12 +82,11 @@ class MovieDetailFragment() : Fragment(),
         val movieId: Int = args.movieId
 
         //get details about the movie
-        movieLiveData = movieFetcher.fetchMovieDetails(movieId)
+        movieLiveData = movieRepository.getMovieDetails(movieId)
         movieLiveData.observe(
             viewLifecycleOwner,
             Observer { movie ->
-                val backdropUrl = BACKDROP_BASE_URL + movie.backdropPath
-                Picasso.get().load(backdropUrl).into(backdrop)
+                Picasso.get().load(movie.backdropUrl).into(backdrop)
                 title.text = movie.title
                 director.text = movie.director
                 release_date.text = movie.releaseDate
@@ -97,7 +95,7 @@ class MovieDetailFragment() : Fragment(),
                 rating.text = movie.averageScore.toString()
                 description.text = movie.description
                 movie.genres.forEach { genre ->
-                    genres.append(genre.name + " | ")
+                    genres.append(genre + " | ")
                 }
                 val revenueFormatted = NumberFormat.getNumberInstance(Locale.ENGLISH)
                     .format(movie.revenue).toString()
@@ -106,7 +104,7 @@ class MovieDetailFragment() : Fragment(),
             })
 
         //get recommended movies
-        recommendedMoviesLiveData = movieFetcher.fetchMovieRecommendations(movieId)
+        recommendedMoviesLiveData = movieRepository.getMovieRecommendations(movieId)
         recommendedMoviesLiveData.observe(
             viewLifecycleOwner,
             Observer { recommendedMovies ->

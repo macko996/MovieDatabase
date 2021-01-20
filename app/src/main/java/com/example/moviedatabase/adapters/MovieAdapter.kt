@@ -15,8 +15,6 @@ import com.squareup.picasso.Picasso
 class MovieAdapter (private val movies: List<Movie>, private val listener: MOnItemClickListener)
     : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
 
-    private val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieHolder {
 
         val itemView = LayoutInflater.from(parent.context)
@@ -36,8 +34,7 @@ class MovieAdapter (private val movies: List<Movie>, private val listener: MOnIt
 
         val movieItem = movies[position]
 
-        val posterUrl = POSTER_BASE_URL + movieItem.posterPath
-        Picasso.get().load(posterUrl).into(holder.poster)
+        Picasso.get().load(movieItem.posterUrl).into(holder.poster)
 
         holder.title.text = movieItem.title
         holder.releaseDate.text = movieItem.releaseDate

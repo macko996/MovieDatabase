@@ -1,9 +1,9 @@
 package com.example.moviedatabase.di
 
-import com.example.moviedatabase.api.CastService
 import com.example.moviedatabase.api.MovieInterceptor
-import com.example.moviedatabase.api.MovieService
-import com.example.moviedatabase.api.TvShowsService
+import com.example.moviedatabase.api.services.CastService
+import com.example.moviedatabase.api.services.MovieService
+import com.example.moviedatabase.api.services.TvShowsService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,7 +46,7 @@ object RetrofitModule {
     }
 
     /**
-     * Provides instance of TvShowsService
+     * Provides instance of MovieService
      */
     @Singleton
     @Provides

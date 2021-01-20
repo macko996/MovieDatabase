@@ -1,4 +1,4 @@
-package com.example.moviedatabase.api
+package com.example.moviedatabase.api.services
 
 import com.example.moviedatabase.model.Cast
 import retrofit2.Call

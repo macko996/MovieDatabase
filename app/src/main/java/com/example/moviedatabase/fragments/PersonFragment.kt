@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -12,14 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.R
+import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.adapters.TvShowsAdapter
 import com.example.moviedatabase.model.Cast
 import com.example.moviedatabase.model.Movie
 import com.example.moviedatabase.model.TvShow
 import com.example.moviedatabase.repository.CastRepository
-import com.example.moviedatabase.repository.MovieFetcher
+import com.example.moviedatabase.repository.MovieRepository
 import com.example.moviedatabase.repository.TvShowsRepository
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +42,7 @@ class PersonFragment : Fragment(),
 
     var personId : Int = 0
     lateinit var personLiveData: MutableLiveData<Cast>
-    lateinit var personMovieCredits: MutableLiveData<ArrayList<Movie>>
+    lateinit var personMovieCredits: LiveData<List<Movie>>
     lateinit var personTVShowsCredits: MutableLiveData<ArrayList<TvShow>>
     private lateinit var movieRecyclerView: RecyclerView
     private lateinit var movieAdapter: MovieAdapter
@@ -50,7 +51,7 @@ class PersonFragment : Fragment(),
     private val args: PersonFragmentArgs by navArgs()
     private lateinit var navController: NavController
     @Inject
-    lateinit var movieFetcher: MovieFetcher
+    lateinit var movieRepository: MovieRepository
     @Inject
     lateinit var castRepository: CastRepository
     @Inject
@@ -105,7 +106,7 @@ class PersonFragment : Fragment(),
             }
         )
 
-        personMovieCredits = movieFetcher.getPersonMovieCredits(personId)
+        personMovieCredits = movieRepository.getPersonMovieCredits(personId)
         personMovieCredits.observe(
             viewLifecycleOwner,
             Observer { movies ->
