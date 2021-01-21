@@ -64,10 +64,10 @@ class MovieRepository @Inject constructor(
      * Search for a movie
      * @param query the query we search for
      */
-    fun searchMovie(query: String): LiveData<List<Movie>> {
+    fun searchMovie(query: String, page: Int): LiveData<List<Movie>> {
 
         val moviesNetworkEntitiesLiveData = networkSource
-            .searchMovie(query)
+            .searchMovie(query, page)
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations
             .map(moviesNetworkEntitiesLiveData, {networkMapper.mapFromEntityList(it)})

@@ -99,10 +99,10 @@ class MovieNetworkSource @Inject constructor(private val movieService: MovieServ
      * Search for a movie
      * @param query the query we search for
      */
-    fun searchMovie(query: String): LiveData<List<MovieNetworkEntity>> {
+    fun searchMovie(query: String, page: Int): LiveData<List<MovieNetworkEntity>> {
 
         val moviesLiveData : MutableLiveData<List<MovieNetworkEntity>> = MutableLiveData()
-        val movieSearchCall: Call<ResultsResponse> = movieService.searchMovie(query)
+        val movieSearchCall: Call<ResultsResponse> = movieService.searchMovie(query,page)
 
         movieSearchCall.enqueue(object : Callback<ResultsResponse> {
 

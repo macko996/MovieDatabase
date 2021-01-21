@@ -19,7 +19,10 @@ interface MovieService {
     fun fetchMovieRecommendations(@Path("movie_id") movieId : Int): Call<ResultsResponse>
 
     @GET("search/movie/")
-    fun searchMovie(@Query("query") query: String): Call<ResultsResponse>
+    fun searchMovie(
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ): Call<ResultsResponse>
 
     @GET("person/{person_id}/movie_credits")
     fun getPersonMovieCredits(@Path("person_id")personId: Int) : Call<RootCreditsResponse>

@@ -38,6 +38,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     private val args: MoviesListFragmentArgs by navArgs()
 
     private var page : Int = 1
+    private var query: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +64,12 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val query = args.searchQuery
-        //get response from web request to https://www.themoviedb.org
+        query = args.searchQuery
+
         if (query == null) {
             getPopularMovies(page)
         } else {
-            searchMovies(query)
+            searchMovies(query!!, page)
         }
     }
 
@@ -136,8 +137,8 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     /**
      * Searches movies and adds them to the recyclerView
      */
-    private fun searchMovies(query: String) {
-        movieRepository.searchMovie(query).observe(
+    private fun searchMovies(query: String, page: Int) {
+        movieRepository.searchMovie(query,page).observe(
             viewLifecycleOwner,
             Observer {movieItems ->
                 movieList.addAll(movieItems)
@@ -156,7 +157,12 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
 
             if (isScrollCompleted() && newState == SCROLL_STATE_IDLE){
                 page++
-                getPopularMovies(page)
+                if (query == null){
+                    getPopularMovies(page)
+                } else {
+                    searchMovies(query!!,page)
+                }
+
             }
         }
 
