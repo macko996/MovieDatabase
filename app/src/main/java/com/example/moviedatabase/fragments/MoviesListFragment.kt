@@ -5,13 +5,13 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.example.moviedatabase.R
 import com.example.moviedatabase.adapters.MovieAdapter
 import com.example.moviedatabase.model.Movie
@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 private const val TAG = "MoviesListFragment"
+const val PAGE_SIZE = 20
 
 /**
  * A simple [Fragment] subclass.
@@ -33,9 +34,10 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     @Inject
     lateinit var movieRepository : MovieRepository
     private var movieList : ArrayList<Movie> = ArrayList()
-    private lateinit var moviesLiveData : LiveData<List<Movie>>
     private lateinit var navController: NavController
     private val args: MoviesListFragmentArgs by navArgs()
+
+    private var page : Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         movieRecyclerView.layoutManager = GridLayoutManager(context,2)
         movieAdapter = MovieAdapter(movieList, this)
         movieRecyclerView.adapter = movieAdapter
+        movieRecyclerView.addOnScrollListener(CustomOnScrollListener())
         return view
     }
 
@@ -63,23 +66,9 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         val query = args.searchQuery
         //get response from web request to https://www.themoviedb.org
         if (query == null) {
-
-            movieRepository.getPopularMovies().observe(
-                viewLifecycleOwner,
-                Observer { movieItems ->
-                    movieList.clear()
-                    movieList.addAll(movieItems)
-                    movieAdapter.notifyDataSetChanged()
-                })
-        } else{
-            moviesLiveData = movieRepository.searchMovie(query)
-            moviesLiveData.observe(
-                viewLifecycleOwner,
-                Observer {movieItems ->
-                    movieList.clear()
-                    movieList.addAll(movieItems)
-                    movieAdapter.notifyDataSetChanged()
-                })
+            getPopularMovies(page)
+        } else {
+            searchMovies(query)
         }
     }
 
@@ -125,6 +114,68 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
 
     override fun onMovieClick(id: Int) {
         onMovieClickImplementaion(id,navController)
+    }
+
+    /**
+     * Gets movies from repository and adds them to the recyclerView adapter
+     */
+    private fun getPopularMovies(page: Int) {
+
+        if (movieList.size == page * PAGE_SIZE) return
+        else {
+            movieRepository.getPopularMovies(page).observe(
+            viewLifecycleOwner,
+            Observer {
+                movieList.addAll(it)
+                movieAdapter.notifyDataSetChanged()
+            })
+        }
+
+    }
+
+    /**
+     * Searches movies and adds them to the recyclerView
+     */
+    private fun searchMovies(query: String) {
+        movieRepository.searchMovie(query).observe(
+            viewLifecycleOwner,
+            Observer {movieItems ->
+                movieList.addAll(movieItems)
+                movieAdapter.notifyDataSetChanged()
+            })
+    }
+
+    /**
+     * OnScrollListener that gets new data when we scroll to the bottom.
+     */
+    inner class CustomOnScrollListener : RecyclerView.OnScrollListener() {
+
+        private var lastVisibleItem = 0
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            if (isScrollCompleted() && newState == SCROLL_STATE_IDLE){
+                page++
+                getPopularMovies(page)
+            }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+            lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition()
+            Log.d(TAG, "onScrolled: lastVisibleItem $lastVisibleItem")
+        }
+
+        private fun isScrollCompleted(): Boolean {
+            val numberOfItems = page* PAGE_SIZE
+
+            if ( (lastVisibleItem+3) >= numberOfItems) {
+                return true
+            }
+            else
+                return false
+        }
+
     }
 
 }

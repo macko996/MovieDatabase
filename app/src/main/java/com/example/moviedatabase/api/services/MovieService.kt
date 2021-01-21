@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface MovieService {
 
     @GET("movie/popular")
-    fun fetchMovies(): Call<ResultsResponse>
+    fun getMovies(@Query("page") page: Int): Call<ResultsResponse>
 
     @GET("movie/{id}")
     fun fetchMovieDetails(@Path("id") id : Int): Call<MovieNetworkEntity>

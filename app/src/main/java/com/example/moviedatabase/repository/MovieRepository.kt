@@ -22,9 +22,9 @@ class MovieRepository @Inject constructor(
     /**
      * Gets popular movies
      */
-    fun getPopularMovies(): LiveData<List<Movie>> {
+    fun getPopularMovies(page: Int): LiveData<List<Movie>> {
         val moviesNetworkEntitiesLiveData = networkSource
-            .getPopularMovies()
+            .getPopularMovies(page)
 
         val moviesLiveData : LiveData<List<Movie>> = Transformations
             .map(moviesNetworkEntitiesLiveData,{networkMapper.mapFromEntityList(it)})
