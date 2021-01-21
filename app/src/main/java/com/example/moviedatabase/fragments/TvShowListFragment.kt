@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 private const val TAG = "TvShowListFragment"
+private const val PAGE_SIZE = 20
 
 /**
  * Fragment for displaying list of TV shows.
@@ -36,6 +37,9 @@ class TvShowListFragment : Fragment(),
     private lateinit var tvShowsLiveData : LiveData<List<TvShow>>
     private lateinit var navController: NavController
     private val args: TvShowListFragmentArgs by navArgs()
+
+    private var page : Int = 1
+    private var query: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,30 +59,18 @@ class TvShowListFragment : Fragment(),
         tvShowsRecyclerView.layoutManager = GridLayoutManager(context,2)
         tvShowsAdapter = TvShowsAdapter(tvShowsList, this)
         tvShowsRecyclerView.setAdapter(tvShowsAdapter)
+        tvShowsRecyclerView.addOnScrollListener(TvShowsOnScrollListener())
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val query = args.searchQuery
-        if (query == null){
-            tvShowsLiveData = tvShowsRepository.getPopularTvShows()
-            tvShowsLiveData.observe(
-                viewLifecycleOwner,
-                Observer { tvShows ->
-                    tvShowsList.clear()
-                    tvShowsList.addAll(tvShows)
-                    tvShowsAdapter.notifyDataSetChanged()
-                })
-        } else{
-            tvShowsLiveData = tvShowsRepository.searchTvShow(query)
-            tvShowsLiveData.observe(
-                viewLifecycleOwner,
-                Observer {tvShows ->
-                    tvShowsList.clear()
-                    tvShowsList.addAll(tvShows)
-                    tvShowsAdapter.notifyDataSetChanged()
-                })
+        query = args.searchQuery
+
+        if (query == null) {
+            getPopularTvShows(page)
+        } else {
+            searchTvShows(query!!, page)
         }
 
     }
@@ -118,4 +110,73 @@ class TvShowListFragment : Fragment(),
             .actionTvShowListFragmentToTvShowDetailsFragment(tvShowId)
         navController.navigate(action)
     }
+
+
+    /**
+     * Gets popular TV shows and adds them to the recyclerView adapter.
+     */
+    private fun getPopularTvShows(page: Int) {
+
+        if (tvShowsList.size == page * PAGE_SIZE) return
+        else {
+            tvShowsRepository.getPopularTvShows(page).observe(
+                viewLifecycleOwner,
+                Observer {
+                    tvShowsList.addAll(it)
+                    tvShowsAdapter.notifyDataSetChanged()
+                })
+        }
+
+    }
+
+    /**
+     * Searches TV Shows and adds them to the recyclerView.
+     */
+    private fun searchTvShows(query: String, page: Int) {
+        tvShowsRepository.searchTvShow(query,page).observe(
+            viewLifecycleOwner,
+            Observer {movieItems ->
+                tvShowsList.addAll(movieItems)
+                tvShowsAdapter.notifyDataSetChanged()
+            })
+    }
+
+    /**
+     * OnScrollListener that gets new data when we scroll to the bottom.
+     */
+    inner class TvShowsOnScrollListener : RecyclerView.OnScrollListener() {
+
+        private var lastVisibleItem = 0
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            if (isScrollCompleted() && newState == RecyclerView.SCROLL_STATE_IDLE){
+                page++
+                if (query == null){
+                    getPopularTvShows(page)
+                } else {
+                    searchTvShows(query!!,page)
+                }
+
+            }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+            lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition()
+            Log.d(TAG, "onScrolled: lastVisibleItem $lastVisibleItem")
+        }
+
+        private fun isScrollCompleted(): Boolean {
+            val numberOfItems = page* PAGE_SIZE
+
+            if ( (lastVisibleItem+3) >= numberOfItems) {
+                return true
+            }
+            else
+                return false
+        }
+
+    }
+
 }

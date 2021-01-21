@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 private const val TAG = "MoviesListFragment"
-const val PAGE_SIZE = 20
+private const val PAGE_SIZE = 20
 
 /**
  * A simple [Fragment] subclass.
@@ -58,7 +58,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
         movieRecyclerView.layoutManager = GridLayoutManager(context,2)
         movieAdapter = MovieAdapter(movieList, this)
         movieRecyclerView.adapter = movieAdapter
-        movieRecyclerView.addOnScrollListener(CustomOnScrollListener())
+        movieRecyclerView.addOnScrollListener(MovieOnScrollListener())
         return view
     }
 
@@ -149,7 +149,7 @@ class MoviesListFragment : Fragment(), MovieAdapter.MOnItemClickListener {
     /**
      * OnScrollListener that gets new data when we scroll to the bottom.
      */
-    inner class CustomOnScrollListener : RecyclerView.OnScrollListener() {
+    inner class MovieOnScrollListener : RecyclerView.OnScrollListener() {
 
         private var lastVisibleItem = 0
 

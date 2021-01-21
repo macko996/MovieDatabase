@@ -25,10 +25,10 @@ class TvShowNetworkSource @Inject constructor(private val tvShowsService: TvShow
     /**
      * Gets popular TV shows.
      */
-    fun getPopularTvShows(): LiveData<List<TvShowNetworkEntity>> {
+    fun getPopularTvShows(page: Int): LiveData<List<TvShowNetworkEntity>> {
 
         val tvShowsLiveData : MutableLiveData<List<TvShowNetworkEntity>> = MutableLiveData()
-        val tvShowCall: Call<RootTVShowsResponse> = tvShowsService.getPopularTvShows()
+        val tvShowCall: Call<RootTVShowsResponse> = tvShowsService.getPopularTvShows(page)
         tvShowCall.enqueue(object : Callback<RootTVShowsResponse> {
 
             override fun onFailure(call: Call<RootTVShowsResponse>, t: Throwable) {
@@ -112,10 +112,10 @@ class TvShowNetworkSource @Inject constructor(private val tvShowsService: TvShow
      * Search for TV Show.
      * @param query the query we search for
      */
-    fun searchTvShow(query: String): LiveData<List<TvShowNetworkEntity>> {
+    fun searchTvShow(query: String, page: Int): LiveData<List<TvShowNetworkEntity>> {
 
         val tvShowsLiveData : MutableLiveData<List<TvShowNetworkEntity>> = MutableLiveData()
-        val tvShowSearchCall: Call<RootTVShowsResponse> = tvShowsService.searchTvShows(query)
+        val tvShowSearchCall: Call<RootTVShowsResponse> = tvShowsService.searchTvShows(query,page)
 
         tvShowSearchCall.enqueue(object : Callback<RootTVShowsResponse> {
 
