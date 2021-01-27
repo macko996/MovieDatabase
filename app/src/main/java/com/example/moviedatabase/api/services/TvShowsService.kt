@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface TvShowsService {
 
     @GET("tv/popular")
-    fun getPopularTvShows(): Call<RootTVShowsResponse>
+    fun getPopularTvShows(@Query("page") page: Int): Call<RootTVShowsResponse>
 
     @GET("tv/{tv_id}")
     fun getTvShowDetails(@Path("tv_id") tvId : Int): Call<TvShowNetworkEntity>
@@ -22,7 +22,10 @@ interface TvShowsService {
     fun getPersonTVShowCredits(@Path("person_id")personId: Int) : Call<RootTvShowCreditsResponse>
 
     @GET("search/tv")
-    fun searchTvShows(@Query("query") query: String) : Call<RootTVShowsResponse>
+    fun searchTvShows(
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ) : Call<RootTVShowsResponse>
 }
 
 class RootTVShowsResponse {

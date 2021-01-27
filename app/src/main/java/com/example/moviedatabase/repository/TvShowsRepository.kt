@@ -22,10 +22,10 @@ class TvShowsRepository @Inject constructor(
     /**
      * Gets popular TV shows.
      */
-    fun getPopularTvShows(): LiveData<List<TvShow>> {
+    fun getPopularTvShows(page: Int): LiveData<List<TvShow>> {
 
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
-            .getPopularTvShows()
+            .getPopularTvShows(page)
 
         val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
             .map(tvShowsNetworkEntitiesLiveData,{mapper.mapFromEntityList(it)})
@@ -68,11 +68,11 @@ class TvShowsRepository @Inject constructor(
      * Search for TV Show.
      * @param query the query we search for
      */
-    fun searchTvShow(query: String): LiveData<List<TvShow>> {
+    fun searchTvShow(query: String, page: Int): LiveData<List<TvShow>> {
 
 
         val tvShowsNetworkEntitiesLiveData = tvShowNetworkSource
-            .searchTvShow(query)
+            .searchTvShow(query, page)
 
         val tvShowsLiveData : LiveData<List<TvShow>> = Transformations
             .map(tvShowsNetworkEntitiesLiveData, {mapper.mapFromEntityList(it)})
